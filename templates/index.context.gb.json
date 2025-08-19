@@ -8,12 +8,9 @@
  * ------------------------------------------------------------
  */
 {
-  "markets": {
-    "us": {
-      "parent": "@default"
-    },
-    "gb": {
-      "parent": "@default"
-    }
-  }
+  "parent": "index.json",
+  "context": {
+    "market": "gb"
+  },
+  "sections": {}
 }

@@ -8,12 +8,16 @@
  * ------------------------------------------------------------
  */
 {
-  "markets": {
-    "us": {
-      "parent": "@default"
-    },
-    "gb": {
-      "parent": "@default"
+  "parent": "header-group.json",
+  "context": {
+    "market": "gb"
+  },
+  "sections": {
+    "header": {
+      "settings": {
+        "announcement_bar_heading": "<p><a href=\"/collections/mens-essential-shirts\" title=\"Men's Essential Shirts\">SHOP ESSENTIAL SHIRTS UK</a></p>"
+      },
+      "blocks": {}
     }
   }
 }
