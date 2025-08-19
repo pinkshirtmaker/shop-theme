@@ -12,5 +12,13 @@
   "context": {
     "market": "us"
   },
-  "sections": {}
+  "sections": {
+    "hero_banner_bF7nWP": {
+      "settings": {
+        "image": "shopify://shop_images/SUMMER-SALE-HERO-BANNER-TEST-V2.webp",
+        "image_desktop": "shopify://shop_images/SUMMER-SALE-HERO-BANNER-TEST-V2.webp"
+      },
+      "blocks": {}
+    }
+  }
 }
