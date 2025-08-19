@@ -1,0 +1,32 @@
+/**
+ * Pick up.
+ */
+.pick-up {
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin-block: var(--spacing-16);
+}
+
+.pick-up__button {
+  margin-block-start: var(--spacing-4);
+}
+
+.pick-up__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  margin-block-start: var(--spacing-32);
+}
+
+.pick-up__address {
+  font-size: var(--font-size-12);
+  margin-block-start: var(--spacing-4);
+}
+
+.pick-up__availability .icon__tick {
+  color: var(--color-success);
+  height: 16px;
+  width: 16px;
+}

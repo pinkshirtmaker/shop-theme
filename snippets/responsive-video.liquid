@@ -1,0 +1,51 @@
+{% comment %}
+  Renders a responsive video element.
+
+  Accepts:
+  - video: {Object} The mobile (default) video object.
+  - video_desktop: {Object} The desktop video object (optional).
+
+  Usage:
+  {% render 'responsive-video',
+    video: section.settings.video,
+    video_desktop: section.settings.video_desktop
+  %}
+{% endcomment %}
+
+<responsive-video>
+  <video
+    {% if video.preview_image %}
+      {% liquid
+        assign poster_height = poster_height | default: video.preview_image.height
+        assign poster_width = poster_width | default: video.preview_image.width
+      %}
+
+      poster="{{ video.preview_image | image_url: height: poster_height, width: poster_width }}"
+    {% endif %}
+
+    {{ attributes }}
+  >
+    {% for source in video.sources %}
+      <source
+        data-src="{{ source.url }}"
+        type="{{ source.mime_type }}"
+
+        {% if video_desktop %}
+          {% liquid
+            assign desktop_url = null
+
+            for desktop_source in video_desktop.sources
+              if desktop_source.mime_type == source.mime_type
+                assign desktop_url = desktop_source.url
+              endif
+            endfor
+          %}
+
+          {% if desktop_url %}
+            data-desktop="{{ desktop_url }}"
+          {% endif %}
+        {% endif %}
+      >
+    {% endfor %}
+  </video>
+</responsive-video>

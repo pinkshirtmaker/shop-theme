@@ -1,0 +1,96 @@
+{% comment %}
+  Renders an address form.
+
+  Accepts:
+  - address: {Object} The address object being updated.
+  - title_tag: {String} Overrides the default form title tag (optional).
+
+  Usage:
+  {% render 'address-form', address: customer.default_address %}
+{% endcomment %}
+{% liquid
+  assign address_fields = 'first_name, last_name, company, address1, address2, city, country, zip, phone, default' | split: ', '
+  assign title_string = 'sections.main_addresses.edit_address' | t
+  assign submit_string = 'sections.main_addresses.form.save' | t
+
+  unless address.id
+    assign title_string = 'sections.main_addresses.new_address' | t
+    assign submit_string = 'sections.main_addresses.form.add' | t
+  endunless
+
+  unless title_tag
+    assign title_tag = 'h3'
+  endunless
+%}
+
+{% form 'customer_address', address %}
+  <{{ title_tag }} class="text-h6">{{ title_string }}</{{ title_tag }}>
+
+  {{ form.errors | default_errors }}
+
+  <div class="form-group">
+    {% for field in address_fields %}
+      {% liquid
+        assign handle = field | handleize
+        assign id = section.id | append: '-new-' | append: handle
+      %}
+
+      <div
+        class="
+          form-group__field
+          {% if field == 'default' %}
+            form-group__field--inline
+          {% endif %}
+          {% unless field == 'default' %}
+            styled-field
+          {% endunless %}
+        "
+      >
+        <label for="{{ id }}">
+          {% # theme-check-disable TranslationKeyExists %}
+          {{ 'sections.main_addresses.form.' | append: field | t }}
+          {% # theme-check-enable TranslationKeyExists %}
+        </label>
+
+        {% if field == 'country' %}
+          <select-provider data-default="{{ form.country }}">
+            <select
+              id="{{ id }}"
+              name="address[{{ field }}]"
+            >
+              {{ all_country_option_tags }}
+            </select>
+          </select-provider>
+
+        {% elsif field == 'default' %}
+          <input
+            id="{{ id }}"
+            type="checkbox"
+            name="address[{{ field }}]"
+            {% if address == customer.default_address %}
+              checked
+            {% endif %}
+            {% # theme-check-disable TranslationKeyExists %}
+            placeholder="{{ 'sections.main_addresses.form.' | append: field | t }}"
+            {% # theme-check-enable TranslationKeyExists %}
+          >
+
+        {% else %}
+          <input
+            id="{{ id }}"
+            name="address[{{ field }}]"
+            type="text"
+            {% unless form[field] == blank %}
+              value="{{ form[field] }}"
+            {% endunless %}
+            {% # theme-check-disable TranslationKeyExists %}
+            placeholder="{{ 'sections.main_addresses.form.' | append: field | t }}"
+            {% # theme-check-enable TranslationKeyExists %}
+          >
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button class="button button--block">{{ submit_string }}</button>
+  </div>
+{% endform %}

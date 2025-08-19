@@ -1,0 +1,79 @@
+<div class="page-margin {% if section.settings.border_top_mobile %}page-border-top-mobile{% endif %} {% if section.settings.border_top_desktop %}page-border-top-desktop{% endif %}">
+  <div class="container">
+    <div class="page-margin__grid grid">
+      <div class="col xs12 m7 offset-m5">
+        {% unless section.settings.heading == empty %}
+          <p class="text-h2">{{ section.settings.heading }}</p>
+        {% endunless %}
+
+        <disclosure-state single-open>
+          {% for block in section.blocks %}
+            <details class="disclosure-reset styled-disclosure">
+              <summary>
+                {% unless block.settings.heading == empty %}
+                  <p class="text-h5 no-margin">{{ block.settings.heading }}</p>
+                {% endunless %}
+
+                {% render 'icon-misc', icon: 'plus' %}
+                {% render 'icon-misc', icon: 'minus' %}
+              </summary>
+
+              {% unless block.settings.content == empty %}
+                <div class="styled-disclosure__content rte">{{ block.settings.content }}</div>
+              {% endunless %}
+            </details>
+          {% endfor %}
+        </disclosure-state>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.accordion-items.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "border_top_mobile",
+      "label": "t:sections.main-page.settings.border_top_mobile.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "border_top_desktop",
+      "label": "t:sections.main-page.settings.border_top_desktop.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block",
+      "name": "t:presets.blocks.block.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:presets.settings.heading.label",
+          "default": "Item heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:presets.settings.content.label",
+          "default": "<p>Item body content</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.accordion-items.name"
+    }
+  ]
+}
+{% endschema %}

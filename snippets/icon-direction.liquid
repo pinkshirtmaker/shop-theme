@@ -1,0 +1,51 @@
+{% comment %}
+  Renders a directional based icon.
+
+  Accepts:
+  - icon: {String} The icon name.
+
+  Usage:
+  {% render 'icon-direction', icon: 'chevron-down' %}
+{% endcomment %}
+
+{% case icon %}
+  {% when 'chevron-up' %}
+    <svg class="icon icon__chevron icon__chevron--up" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.33 12.376a.5.5 0 0 1-.706-.047L8 4.76l-6.624 7.57a.5.5 0 0 1-.752-.658l7-8a.5.5 0 0 1 .752 0l7 8a.5.5 0 0 1-.047.705Z" />
+    </svg>
+
+  {% when 'chevron-right' %}
+    <svg class="icon icon__chevron icon__chevron--right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M3.624 15.33a.5.5 0 0 1 .047-.706L11.24 8 3.67 1.376a.5.5 0 1 1 .658-.752l8 7a.5.5 0 0 1 0 .752l-8 7a.5.5 0 0 1-.705-.047Z" />
+    </svg>
+
+  {% when 'chevron-down' %}
+    <svg class="icon icon__chevron icon__chevron--down" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path d="M.67 3.624a.5.5 0 0 1 .706.047L8 11.24l6.624-7.57a.5.5 0 0 1 .752.658l-7 8a.5.5 0 0 1-.752 0l-7-8a.5.5 0 0 1 .047-.705Z" />
+    </svg>
+
+  {% when 'chevron-left' %}
+    <svg class="icon icon__chevron icon__chevron--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M12.376.67a.5.5 0 0 1-.047.706L4.76 8l7.57 6.624a.5.5 0 1 1-.658.752l-8-7a.5.5 0 0 1 0-.752l8-7a.5.5 0 0 1 .705.047Z" />
+    </svg>
+
+  {% when 'arrow-up' %}
+    <svg class="icon icon__arrow icon__arrow--up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M13.95 6.689a.5.5 0 0 0-.006-.708L8.507.643a.5.5 0 0 0-.7 0L2.242 6.105a.5.5 0 0 0 .701.714l4.713-4.627v12.902a.5.5 0 0 0 1 0V2.192l4.586 4.503a.5.5 0 0 0 .707-.006Z" />
+    </svg>
+
+  {% when 'arrow-right' %}
+    <svg class="icon icon__arrow icon__arrow--right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M9.452 13.903a.5.5 0 0 0 .707-.006l5.338-5.437a.5.5 0 0 0 0-.7l-5.462-5.564a.5.5 0 1 0-.713.701l4.627 4.713H1.047a.5.5 0 1 0 0 1h12.902l-4.504 4.586a.5.5 0 0 0 .007.707Z" />
+    </svg>
+
+  {% when 'arrow-down' %}
+    <svg class="icon icon__arrow icon__arrow--down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M2.237 9.405a.5.5 0 0 0 .007.707L7.68 15.45a.5.5 0 0 0 .7 0l5.563-5.462a.5.5 0 0 0-.7-.713L8.53 13.902V1a.5.5 0 1 0-1 0v12.902L2.944 9.398a.5.5 0 0 0-.707.007Z" />
+    </svg>
+
+  {% when 'arrow-left' %}
+    <svg class="icon icon__arrow icon__arrow--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M6.736 2.19a.5.5 0 0 0-.707.007L.69 7.634a.5.5 0 0 0 0 .7l5.462 5.563a.5.5 0 1 0 .714-.7L2.239 8.484H15.14a.5.5 0 0 0 0-1H2.239l4.503-4.587a.5.5 0 0 0-.006-.707Z" />
+    </svg>
+{% endcase %}

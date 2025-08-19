@@ -1,0 +1,56 @@
+{% comment %}
+  Renders a quantity field with controls.
+
+  Accepts:
+  - initial_value: {Number} The default quantity value.
+  - maximum: {Number} The maximum quantity available.
+  - input_attributes: {String} Optional custom attribute.
+  - id: {String} Unique identifier for the component.
+
+  Usage:
+  {% render 'quantity-selector' %}
+{% endcomment %}
+
+{% liquid
+  unless id
+    assign id = section.id
+  endunless
+%}
+
+<quantity-selector class="quantity-selector">
+  <label class="visually-hidden" for="{{ id | append: '-quantity' }}">
+    {{ 'quantity_selector.label' | t }}
+  </label>
+
+  <button
+    class="quantity-selector__button button-reset"
+    type="button"
+    data-target="quantity-selector.decrease"
+    title="Decrease"
+  >
+    -
+  </button>
+
+  <input
+    id="{{ id | append: '-quantity' }}"
+    type="number"
+    {% if maximum %}
+      max="{{ maximum }}"
+    {% endif %}
+    min="1"
+    name="{{ name | default: 'quantity' }}"
+    value="{{ initial_value | default: 1 }}"
+    data-target="quantity-selector.input"
+    readonly
+    {{ input_attributes }}
+  >
+
+  <button
+    class="quantity-selector__button button-reset"
+    type="button"
+    data-target="quantity-selector.increase"
+    title="Increase"
+  >
+    +
+  </button>
+</quantity-selector>

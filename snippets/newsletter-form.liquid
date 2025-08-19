@@ -1,0 +1,38 @@
+{% comment %}
+  Renders a newsletter form.
+
+  Accepts:
+  - heading: {String} Optional title.
+
+  Usage:
+  {% render 'newsletter-form' %}
+{% endcomment %}
+
+{% form 'customer' %}
+  {% unless heading == blank %}
+    <h2 class="text-h6">{{ heading }}</h2>
+  {% endunless %}
+
+  {{ form.errors | default_errors }}
+
+  {% if form.posted_successfully? %}
+    <p class="text-body-small success">{{ 'newsletter_form.success' | t }}</p>
+  {% endif %}
+
+  <div class="form-group form-group--inline">
+    <div class="form-group__field styled-field">
+      <label for="{{ section.id | append: '-newsletter-email' }}">
+        {{ 'newsletter_form.email' | t }}
+      </label>
+
+      <input
+        id="{{ section.id | append: '-newsletter-email' }}"
+        name="contact[email]"
+        type="email"
+        placeholder="{{ 'newsletter_form.email' | t }}"
+      >
+    </div>
+
+    <button class="button button-reset">{{ 'newsletter_form.submit' | t }}</button>
+  </div>
+{% endform %}

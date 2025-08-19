@@ -1,0 +1,519 @@
+{% comment %}
+  Renders a form for adding a product to the cart.
+
+  Accepts:
+  - product: {Object} The product object.
+  - selected_variant: {Object} The default variant.
+  - attributes: {String} Optional attributes.
+  - blocks: {Array} The section blocks (required).
+  - hide_header: {Boolean} Hides the title and pricing.
+  - require_option_selection: {Boolean} Requires the customer to select options, rather than being pre-selected.
+  - low_stock_threshold: {Number} The quantity at which the low stock warning will be displayed.
+  - size_guide_url: {String} The size guide link.
+  - disable_add_to_cart_state: {Boolean} Disables changing the add to cart state (if it's being replaced elsewhere).
+
+  Usage:
+  {% render 'product-form', product: product %}
+{% endcomment %}
+
+{% liquid
+  unless selected_variant
+    if require_option_selection
+      assign selected_variant = product.selected_variant
+    else
+      assign selected_variant = product.selected_or_first_available_variant
+    endif
+  endunless
+%}
+
+<product-form
+  {{ attributes }}
+  {% if disable_add_to_cart_state %}
+    disable-add-to-cart-state
+  {% endif %}
+>
+  {% form 'product',
+    product,
+    class: 'product-form',
+    data-target: 'product-form.form',
+    autocomplete: 'off',
+    novalidate: true
+  %}
+    {% for block in blocks %}
+      {% case block.type %}
+        {% when 'header' %}
+          {% unless hide_header %}
+            {% render 'product-form-header', product: product, selected_variant: selected_variant %}
+          {% endunless %}
+
+        {% when 'options' %}
+          <div class="product-form__options" data-target="main-product.options">
+            {% comment %}
+              Product fit
+            {% endcomment %}
+            {% unless product.metafields.custom.linked_products_product_fit == blank
+              or product.metafields.custom.linked_products_product_fit.value.count == 0
+            %}
+              <div class="product-form__option product-form__option--linked">
+                <p class="product-form__legend text-subheading legend">{{ 'sections.main_product.product_fit' | t }}</p>
+
+                <ul class="list-reset product-form__values hide-scrollbar">
+                  {% for linked_product in product.metafields.custom.linked_products_product_fit.value %}
+                    <li>
+                      {% render 'product-form-linked-product',
+                        linked_product: linked_product,
+                        product: product,
+                        selected_variant: selected_variant,
+                        label: linked_product.metafields.custom.this_product_fit.value
+                      %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endunless %}
+
+            {% comment %}
+              Colour
+            {% endcomment %}
+            {% unless product.metafields.custom.linked_products_colour == blank
+              or product.metafields.custom.linked_products_colour.value.count == 0
+            %}
+              <div class="product-form__option product-form__option--linked">
+                <div class="product-form__option-heading">
+                  <p class="product-form__legend text-subheading legend">{{ 'sections.main_product.colour' | t }}:</p>
+                  <p class="text-body-small">{{ product.metafields.custom.this_product_product_name }}</p>
+                </div>
+
+                <ul class="list-reset product-form__values product-form__values--tight hide-scrollbar">
+                  {% for linked_product in product.metafields.custom.linked_products_colour.value %}
+                    {% liquid
+                      assign linked_product_swatch_image = linked_product.images.last
+
+                      for image in linked_product.images
+                        assign sanitized_image_alt = image.alt | downcase
+
+                        if sanitized_image_alt == 'swatch'
+                          assign linked_product_swatch_image = image
+                        endif
+                      endfor
+                    %}
+
+                    <li>
+                      {% render 'product-form-linked-product',
+                        linked_product: linked_product,
+                        product: product,
+                        selected_variant: selected_variant,
+                        label: linked_product.metafields.custom.this_product_product_name,
+                        image: linked_product_swatch_image,
+                        color: linked_product.metafields.custom.this_product_colour.value
+                      %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endunless %}
+
+            {% comment %}
+              Cuff type
+            {% endcomment %}
+            {% unless product.metafields.custom.linked_products_cuff_type == blank
+              or product.metafields.custom.linked_products_cuff_type.value.count == 0
+            %}
+              <div class="product-form__option product-form__option--linked">
+                <p class="product-form__legend text-subheading legend">{{ 'sections.main_product.cuff_type' | t }}</p>
+
+                <ul class="list-reset product-form__values hide-scrollbar">
+                  {% for linked_product in product.metafields.custom.linked_products_cuff_type.value %}
+                    <li>
+                      {% render 'product-form-linked-product',
+                        linked_product: linked_product,
+                        product: product,
+                        selected_variant: selected_variant,
+                        label: linked_product.metafields.custom.this_product_cuff_type.value
+                      %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endunless %}
+
+            {% for option in product.options_with_values %}
+              {% liquid
+                assign option_index0 = forloop.index0
+                assign sanitized_option_name = option.name | handleize
+              %}
+
+              <div class="product-form__option">
+                <fieldset
+                  class="
+                    {% if product.has_only_default_variant %}
+                      visually-hidden
+                    {% endif %}
+                  "
+                >
+                  <div class="product-form__option-heading">
+                    <legend class="product-form__legend text-subheading no-padding">{{ option.name }}</legend>
+
+                    {% if sanitized_option_name == 'size' and option.values.size >= 2 %}
+                      {% assign size_guide_link_classes = 'product-form__size-link text-button' %}
+
+                      {% capture size_guide_link_content %}
+                        {{ 'sections.main_product.size_guide_link_text' | t }} {% render 'icon-direction', icon: 'arrow-right' %}
+                      {% endcapture %}
+
+                      {% if product.metafields.custom.size_guide_modal %}
+                        <button
+                          class="{{ size_guide_link_classes }} button-reset"
+                          data-toggle="{{ product.handle }}-size-guide-modal"
+                        >
+                          {{ size_guide_link_content }}
+                        </button>
+                      {% elsif size_guide_url != null %}
+                        <a class="{{ size_guide_link_classes }}" href="{{ size_guide_url }}">
+                          {{- size_guide_link_content -}}
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+
+                  {% if sanitized_option_name == 'size' and option.values.size >= 2 %}
+                    <div class="product-form__select-dropdown">
+                      <select-dropdown class="select-dropdown styled-field">
+                        <label
+                          for="{{ product.id | append: '-' | append: sanitized_option_name }}"
+                        >
+                          {{ 'sections.main_product.select' | t }}
+                          {{ option.name | downcase }}
+                        </label>
+
+                        <button
+                          class="native-select button-reset"
+                          data-target="select-dropdown.button"
+                          type="button"
+                          title="{{ 'sections.main_product.select' | t }} {{ option.name | downcase }}"
+                        >
+                          {{ option.selected_value }}
+                        </button>
+
+                        <select
+                          id="{{ product.id | append: '-' | append: sanitized_option_name }}"
+                          class="product-form__input visually-hidden {% if low_stock_threshold and selected_variant.available and selected_variant.inventory_quantity <= low_stock_threshold %}has-warning{% endif %}"
+                          name="{{ option.name }}"
+                          data-target="product-form.option"
+                          required
+                          hidden
+                        >
+                          {% if require_option_selection %}
+                            <option
+                              {% unless selected_variant %}
+                                selected
+                              {% endunless %}
+                              disabled
+                              value=""
+                            >
+                              {{ 'sections.main_product.select' | t }}
+                              {{ option.name | downcase }}
+                            </option>
+                          {% endif %}
+
+                          {% for value in option.values %}
+                            {% liquid
+                              assign is_disabled = false
+
+                              if option_index0 == 0
+                                assign has_available_variants = false
+
+                                for variant in product.variants
+                                  if variant.options[option_index0] == value and variant.available
+                                    assign has_available_variants = true
+                                  endif
+                                endfor
+
+                                unless has_available_variants
+                                  assign is_disabled = true
+                                endunless
+                              else
+                                unless value.variant.available
+                                  assign is_disabled = true
+                                endunless
+                              endif
+                            %}
+
+                            {% assign value_handleized = value | handleize %}
+
+                            <option
+                              value="{{ value | escape }}"
+                              {% if selected_variant.options[option_index0] == value %}
+                                selected
+                              {% endif %}
+                              {% if is_disabled %}
+                                disabled
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+
+                        <div class="select-dropdown__dropdown" data-target="select-dropdown.dropdown">
+                          <div class="select-dropdown__header">
+                            <p class="text-subheading">
+                              {{ 'sections.main_product.select' | t }}
+                              {{ option.name | downcase }}
+                            </p>
+
+                            <button
+                              class="select-dropdown__close button-reset"
+                              data-target="select-dropdown.close"
+                              title="Close"
+                              type="button"
+                            >
+                              {% render 'icon-misc', icon: 'close' %}
+                            </button>
+                          </div>
+
+                          <div class="select-dropdown__list">
+                            {% for value in option.values %}
+                              <button
+                                class="select-dropdown__value button-reset {% unless value.variant.available %}is-disabled{% endunless %}"
+                                data-target="select-dropdown.value"
+                                {% if value.variant.available %}
+                                  data-value="{{ value }}"
+                                {% endif %}
+                                tabindex="0"
+                                type="button"
+                              >
+                                {{ value }}
+                              </button>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </select-dropdown>
+
+                      <p class="product-form__max-quantity-warning" data-target="product-form.max-quantity-warning">
+                        {{ 'sections.main_product.maximum_quantity_available' | t }}
+                      </p>
+                    </div>
+
+                    {% if low_stock_threshold
+                      and selected_variant.available
+                      and selected_variant.inventory_quantity <= low_stock_threshold
+                    %}
+                      <p class="product-form__warning">
+                        {% render 'icon-misc', icon: 'clock' %}
+                        {{ 'sections.main_product.low_stock' | t: count: selected_variant.inventory_quantity }}
+                      </p>
+                    {% endif %}
+                  {% else %}
+                    <div class="product-form__values hide-scrollbar">
+                      {% for value in option.values %}
+                        {% liquid
+                          assign is_disabled = false
+
+                          if option_index0 == 0
+                            assign has_available_variants = false
+
+                            for variant in product.variants
+                              if variant.options[option_index0] == value and variant.available
+                                assign has_available_variants = true
+                              endif
+                            endfor
+
+                            unless has_available_variants
+                              assign is_disabled = true
+                            endunless
+                          else
+                            unless value.variant.available
+                              assign is_disabled = true
+                            endunless
+                          endif
+                        %}
+
+                        {% assign value_handleized = value | handleize %}
+
+                        <input
+                          id="{{ product.id | append: '-' | append: value_handleized }}"
+                          class="product-form__input visually-hidden"
+                          name="{{ option.name }}"
+                          type="radio"
+                          value="{{ value | escape }}"
+                          {% if selected_variant.options[option_index0] == value %}
+                            checked
+                          {% endif %}
+                          {% if is_disabled %}
+                            disabled
+                          {% endif %}
+                          data-target="product-form.option"
+                          data-option-index0="{{ option_index0 }}"
+                          required
+                        >
+
+                        <label
+                          class="product-form__value"
+                          for="{{ product.id | append: '-' | append: value_handleized }}"
+                        >
+                          {{ value }}
+                        </label>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  <p class="product-form__required">
+                    {{ 'sections.main_product.select' | t }}
+                    {{ option.name | downcase }}
+                  </p>
+                </fieldset>
+              </div>
+            {% endfor %}
+          </div>
+
+        {% when 'buttons' %}
+          <p class="product-form__message text-body-small" data-target="product-form.message"></p>
+
+          <div class="product-form__add-to-cart" data-target="main-product.add-to-cart">
+            {% liquid
+              assign disabled = false
+
+              if selected_variant
+                unless selected_variant.available
+                  assign disabled = true
+                endunless
+              else
+                unless product.available
+                  assign disabled = true
+                endunless
+              endif
+            %}
+
+            <div class="product-form__quantity {% if disabled %}visually-hidden{% endif %}">
+              {% liquid
+                assign maximum_available = false
+
+                unless selected_variant.inventory_management == null
+                  unless selected_variant.inventory_policy == 'continue'
+                    assign maximum_available = selected_variant.inventory_quantity
+
+                    if maximum_available == 0
+                      assign maximum_available = 1
+                    endif
+                  endunless
+                endunless
+              %}
+
+              {% render 'quantity-selector', maximum: maximum_available %}
+            </div>
+
+            {% assign button_classes = 'button button--add-to-cart button--block button--xlarge button-reset button--loader' %}
+
+            {% if disabled %}
+              <button
+                class="{{ button_classes }} button--grey"
+                type="button"
+                data-target="product-form.notify"
+                data-toggle="{{ product.handle }}-notify"
+              >
+                {{ 'sections.main_product.notify_open' | t }}
+              </button>
+            {% else %}
+              <button
+                class="{{ button_classes }}"
+                {% if disabled %}
+                  disabled
+                {% endif %}
+                data-target="product-form.submit"
+              >
+                {% if disabled %}
+                  {{ 'sections.main_product.out_of_stock' | t }}
+
+                {% else %}
+                  {{ 'sections.main_product.add_to_cart' | t }}
+                  {% render 'growing-arrow', absolute: true %}
+                {% endif %}
+              </button>
+            {% endif %}
+          </div>
+
+          {% if additional_checkout_buttons %}
+            {{ content_for_additional_checkout_buttons }}
+          {% endif %}
+
+          <div class="product-form__pick-up" data-target="main-product.pick-up">
+            {% render 'pick-up', selected_variant: selected_variant %}
+          </div>
+
+        {% when '@app' %}
+          {% render block %}
+
+        {% when 'liquid' %}
+          {{ block.settings.liquid }}
+      {% endcase %}
+    {% endfor %}
+
+    <div class="visually-hidden" data-target="main-product.selector">
+      <label for="{{ product.id | append: '-variant-selector' }}">
+        {{ 'sections.main_product.variant' | t }}
+      </label>
+
+      <select
+        id="{{ product.id | append: '-variant-selector' }}"
+        name="id"
+        data-target="product-form.variant-selector"
+      >
+        {% for variant in product.variants %}
+          <option
+            value="{{ variant.id }}"
+            {% if variant == selected_variant %}
+              selected
+            {% endif %}
+            {% unless variant.available %}
+              disabled
+            {% endunless %}
+          >
+            {{ variant.title }} - {{ variant.price | money_without_trailing_zeros }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="product-form__accordions">
+      {% unless product.description == empty %}
+        <details class="styled-disclosure disclosure-reset" open>
+          <summary class="text-subheading">
+            {{ 'sections.main_product.description' | t }}
+            {% render 'icon-direction', icon: 'arrow-down' %}
+          </summary>
+
+          <div class="styled-disclosure__content rte">{{ product.description }}</div>
+        </details>
+      {% endunless %}
+
+      {% unless section.settings.delivery_information == empty %}
+        <details class="styled-disclosure disclosure-reset">
+          <summary class="text-subheading">
+            {{ 'sections.main_product.delivery' | t }}
+            {% render 'icon-direction', icon: 'arrow-down' %}
+          </summary>
+
+          <div class="styled-disclosure__content rte">{{ section.settings.delivery_information }}</div>
+        </details>
+      {% endunless %}
+    </div>
+  {% endform %}
+
+  <script
+    type="application/json"
+    data-target="product-form.data"
+  >
+    {
+      "variants": [
+        {% for variant in product.variants %}
+          {
+            "available": {{ variant.available | json }},
+            "id": {{ variant.id | json }},
+            "options": {{ variant.options | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  </script>
+</product-form>

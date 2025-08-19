@@ -1,0 +1,485 @@
+{% liquid
+  assign logo_tag = 'p'
+  assign has_announcement_bar = false
+
+  assign logo_alt = section.settings.logo.alt | default: shop.name
+  assign transparent_logo_alt = section.settings.transparent_logo.alt | default: shop.name
+  assign blog_logo_alt = section.settings.blog_logo.alt | default: shop.name
+  assign logo_width = section.settings.logo_width
+  assign logo_width_2x = logo_width | times: 2
+
+  if request.page_type == 'index'
+    assign logo_tag = 'h1'
+  endif
+
+  assign customer_url = routes.account_login_url
+  assign customer_label = 'sections.header.log_in' | t
+
+  if customer
+    assign customer_url = routes.account_url
+    assign customer_label = 'sections.header.account' | t
+  endif
+
+  echo 'site-header.css' | asset_url | stylesheet_tag: preload: true
+%}
+
+{% unless section.settings.announcement_bar_heading == empty
+  and section.settings.announcement_bar_subheading == empty
+  and section.settings.announcement_bar_link_text == empty
+  or section.settings.announcement_bar_link_url == empty
+%}
+  {% assign has_announcement_bar = true %}
+{% endunless %}
+
+<script src="{{ 'site-header.js' | asset_url }}" type="module" defer></script>
+
+<style>
+  :root {
+    /**
+     * Updates the height variable defaults (set in `css-variables.liquid`) based on section settings.
+     */
+    {% if has_announcement_bar %}
+      --header-announcement-height: 32px;
+    {% endif %}
+
+    @media (min-width: 1024px) {
+      {% if has_announcement_bar %}
+        --header-announcement-height: 40px;
+      {% endif %}
+    }
+  }
+</style>
+
+<site-header class="site-header {% if section.settings.transparent_on_index and request.page_type == 'index' %}site-header--transparent-on-index{% endif %}">
+  {% if has_announcement_bar %}
+    {% render 'announcement-bar',
+      background_color: section.settings.announcement_bar_background_color,
+      text_color: section.settings.announcement_bar_text_color,
+      heading: section.settings.announcement_bar_heading,
+      subheading: section.settings.announcement_bar_subheading,
+      link_url: section.settings.announcement_bar_link_url,
+      link_text: section.settings.announcement_bar_link_text
+    %}
+  {% endif %}
+
+  <div class="site-header__main" data-target="site-header.main">
+    <div class="container">
+      <div class="grid">
+        <div class="site-header__actions col xs3 m5">
+          <button
+            class="site-header__menu-toggle site-header__mobile-item button-reset"
+            type="button"
+            data-target="site-header.menu-toggle"
+          >
+            {% render 'icon-misc', icon: 'menu' %}
+            {% render 'icon-misc', icon: 'close' %}
+
+            <span class="visually-hidden">
+              {{ 'sections.header.menu' | t }}
+            </span>
+          </button>
+
+          <a
+            class="site-header__mobile-item"
+            href="{{ routes.search_url }}"
+            title="{{ 'sections.header.search' | t }}"
+            data-target="site-header.mobile-search-toggle"
+          >
+            {% render 'icon-misc', icon: 'search' %}
+          </a>
+
+          {% unless section.settings.menu == blank %}
+            {% render 'header-nav',
+              list: section.settings.menu,
+              customer_url: customer_url,
+              customer_label: customer_label
+            %}
+          {% endunless %}
+        </div>
+
+        <div class="col xs6 m2">
+          <{{ logo_tag }} class="site-header__logo text-h6">
+            <a href="{{ routes.root_url }}">
+              {% liquid
+                assign is_blog_page = false
+
+                if request.page_type == 'blog' or request.page_type == 'article' or request.page_type == '404'
+                  assign is_blog_page = true
+                endif
+              %}
+
+              {% if section.settings.logo == null and section.settings.transparent_logo == null %}
+                {{ shop.name }}
+              {% else %}
+                {% if section.settings.logo %}
+                  {{
+                    section.settings.logo
+                    | image_url: width: logo_width_2x
+                    | image_tag:
+                      alt: logo_alt,
+                      width: logo_width,
+                      srcset: null,
+                      class: 'site-header__logo-image',
+                      loading: 'eager'
+                  }}
+                {% endif %}
+
+                {% if is_blog_page and section.settings.blog_logo %}
+                  {{
+                    section.settings.blog_logo
+                    | image_url: width: logo_width_2x
+                    | image_tag:
+                      alt: blog_logo_alt,
+                      width: logo_width,
+                      srcset: null,
+                      class: 'site-header__blog-logo',
+                      loading: 'eager'
+                  }}
+                {% endif %}
+
+                {% if section.settings.transparent_logo %}
+                  {{
+                    section.settings.transparent_logo
+                    | image_url: width: logo_width_2x
+                    | image_tag:
+                      alt: transparent_logo_alt,
+                      width: logo_width,
+                      srcset: null,
+                      class: 'site-header__transparent-logo',
+                      loading: 'eager'
+                  }}
+                {% endif %}
+              {% endif %}
+            </a>
+          </{{ logo_tag }}>
+        </div>
+
+        <div class="col xs3 m5">
+          <ul class="site-header__misc site-header__actions text-right list-reset">
+            <li class="site-header__desktop-item">
+              <div class="site-header__action">
+                <form
+                  class="site-header-search site-header__search-desktop"
+                  action="{{ routes.search_url }}"
+                  data-target="site-header.desktop-search"
+                >
+                  <label class="visually-hidden" for="{{ section.id | append: '-search-desktop' }}">
+                    {{ 'sections.header.search' | t }}
+                  </label>
+
+                  <input
+                    id="{{ section.id | append: '-search-desktop' }}"
+                    class="site-header-search__input"
+                    name="q"
+                    value="{{ search.terms | escape }}"
+                    type="search"
+                    data-target="site-header.desktop-search-input"
+                  >
+
+                  <button
+                    class="site-header-search__submit button-reset"
+                    type="submit"
+                    title="{{ 'sections.header.search' | t }}"
+                    data-target="site-header.desktop-search-toggle"
+                  >
+                    {% render 'icon-misc', icon: 'search' %}
+                  </button>
+                </form>
+              </div>
+            </li>
+
+            {% if section.settings.wishlist_url %}
+              <li>
+                <a
+                  href="{{ section.settings.wishlist_url }}"
+                  class="site-header__action"
+                  title="{{ 'sections.header.wishlist' | t }}"
+                >
+                  {% render 'icon-misc', icon: 'favourites' %}
+                </a>
+              </li>
+            {% endif %}
+
+            {% if shop.customer_accounts_enabled %}
+              <li class="site-header__desktop-item">
+                <a class="site-header__action" href="{{ customer_url }}" title="{{ customer_label }}">
+                  {%- render 'icon-misc', icon: 'profile' -%}
+                </a>
+              </li>
+            {% endif %}
+
+            <li>
+              <a
+                class="site-header__action site-header-cart"
+                href="{{ routes.cart_url }}"
+                data-toggle="cart-drawer"
+                title="{{ 'sections.header.cart' | t }}"
+              >
+                {% render 'icon-misc', icon: 'shopping-bag' %}
+
+                <cart-section
+                  section-name="header"
+                  {% if cart.empty? %}
+                    is-empty
+                  {% endif %}
+                >
+                  {% unless cart.item_count == 0 %}
+                    <span class="site-header-cart__count" data-target="cart-section.count">{{ cart.item_count }}</span>
+                  {% endunless %}
+                </cart-section>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-header__mobile-search" data-target="site-header.mobile-search">
+      <button class="button-reset" data-target="site-header.mobile-search-close" title="Close search" type="button">
+        {% render 'icon-misc', icon: 'close' %}
+      </button>
+
+      <form class="site-header-search" action="{{ routes.search_url }}">
+        <label class="visually-hidden" for="{{ section.id | append: '-search' }}">
+          {{ 'sections.header.search' | t }}
+        </label>
+
+        <input
+          id="{{ section.id | append: '-search' }}"
+          class="site-header-search__input"
+          name="q"
+          value="{{ search.terms | escape }}"
+          type="search"
+        >
+
+        <button
+          class="site-header-search__submit button-reset"
+          type="submit"
+          title="{{ 'sections.header.search' | t }}"
+        >
+          {% render 'icon-misc', icon: 'search' %}
+        </button>
+      </form>
+    </div>
+  </div>
+</site-header>
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "shopify-section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.settings.logo.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "transparent_logo",
+      "label": "t:sections.header.settings.transparent_logo.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "blog_logo",
+      "label": "t:sections.header.settings.blog_logo.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 130,
+      "unit": "t:sections.header.settings.logo_width.unit",
+      "label": "t:sections.header.settings.logo_width.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:presets.settings.menu.label",
+      "default": "main-menu"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_url",
+      "label": "t:sections.header.settings.wishlist_url.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_index",
+      "label": "t:sections.header.settings.transparent_on_index.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__1.content"
+    },
+    {
+      "type": "richtext",
+      "id": "announcement_bar_heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "<p>Announcement bar heading</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "announcement_bar_subheading",
+      "label": "t:presets.settings.subheading.label"
+    },
+    {
+      "type": "color",
+      "id": "announcement_bar_background_color",
+      "label": "t:presets.settings.background_color.label",
+      "default": "#BE8383"
+    },
+    {
+      "type": "color",
+      "id": "announcement_bar_text_color",
+      "label": "t:presets.settings.text_color.label",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "text",
+      "id": "announcement_bar_link_text",
+      "label": "t:sections.header.settings.announcement_bar_link_text.label",
+      "default": "Store locator"
+    },
+    {
+      "type": "url",
+      "id": "announcement_bar_link_url",
+      "label": "t:sections.header.settings.announcement_bar_link_url.label",
+      "default": "/collections/all"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        {
+          "type": "number",
+          "id": "menu_item_position",
+          "label": "Menu item position"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_shop_all",
+          "label": "Hide the \"shop all\" link"
+        },
+        {
+          "type": "header",
+          "content": "Swatch links"
+        },
+        {
+          "type": "text",
+          "id": "swatch_links_heading",
+          "label": "Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "swatch_links_list",
+          "label": "Menu",
+          "info": "Define swatch colors in link titles, e.g. \"Blue: #B9D8F4\""
+        },
+        {
+          "type": "header",
+          "content": "Quick links"
+        },
+        {
+          "type": "text",
+          "id": "quick_links_heading",
+          "label": "Heading",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "quick_links_list",
+          "label": "Menu"
+        },
+        {
+          "type": "header",
+          "content": "Banner 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_1_image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "banner_1_caption",
+          "label": "Caption",
+          "default": "Image caption"
+        },
+        {
+          "type": "url",
+          "id": "banner_1_url",
+          "label": "Link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "header",
+          "content": "Banner 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_2_image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "banner_2_caption",
+          "label": "Caption",
+          "default": "Image caption"
+        },
+        {
+          "type": "url",
+          "id": "banner_2_url",
+          "label": "Link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "header",
+          "content": "Banner 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_3_image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "banner_3_caption",
+          "label": "Caption",
+          "default": "Image caption"
+        },
+        {
+          "type": "url",
+          "id": "banner_3_url",
+          "label": "Link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "header",
+          "content": "Footer"
+        },
+        {
+          "type": "text",
+          "id": "footer_content",
+          "label": "Content"
+        },
+        {
+          "type": "text",
+          "id": "footer_link_label",
+          "label": "Contact label"
+        },
+        {
+          "type": "url",
+          "id": "footer_link_url",
+          "label": "Contact link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

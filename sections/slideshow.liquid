@@ -1,0 +1,183 @@
+{% assign namespace = 'slideshow-' | append: section.id %}
+
+<script src="{{ 'slideshow-section.js' | asset_url }}" defer type="module"></script>
+
+{{ 'slideshow.css' | asset_url | stylesheet_tag }}
+
+<slideshow-section id="{{ namespace }}" class="slideshow at-start">
+  <swiper-container
+    class="slideshow__header-slider"
+    effect="fade"
+    allow-touch-move="false"
+    data-target="slideshow-section.header-slider"
+  >
+    <swiper-slide></swiper-slide>
+
+    {% for block in section.blocks %}
+      <swiper-slide>
+        <div class="slideshow-header">
+          <p class="slideshow-header__count text-h2 no-margin">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</p>
+
+          {% unless block.settings.heading == empty %}
+            <span class="slideshow-header__separator"></span>
+            <p class="slideshow-header__heading text-h2 no-margin">{{ block.settings.heading }}</p>
+          {% endunless %}
+        </div>
+      </swiper-slide>
+    {% endfor %}
+  </swiper-container>
+
+  <swiper-container
+    class="slideshow__main-slider"
+    navigation-next-el="#{{ namespace }}-start"
+    data-target="slideshow-section.main-slider"
+    pagination-type="fraction"
+    pagination-el="#{{ namespace }}-pagination"
+    loop
+    speed="2000"
+    breakpoints='
+      {
+        "768": {
+          "slidesPerView": 1.25,
+          "centeredSlides": true
+        }
+      }
+    '
+  >
+    <swiper-slide>
+      <div class="slideshow-start">
+        {% unless section.settings.subheading == empty %}
+          <p class="text-subheading">{{ section.settings.subheading }}</p>
+        {% endunless %}
+
+        {% unless section.settings.heading == empty %}
+          <p class="text-h1">{{ section.settings.heading }}</p>
+        {% endunless %}
+
+        {% unless section.settings.start_button_label == empty %}
+          <button id="{{ namespace }}-start" class="slideshow-start__button text-button button-reset">
+            {{ section.settings.start_button_label }}
+            {% render 'growing-arrow' %}
+          </button>
+        {% endunless %}
+      </div>
+    </swiper-slide>
+
+    {% for block in section.blocks %}
+      <swiper-slide>
+        {% unless block.settings.image == null %}
+          {{ block.settings.image | image_url: width: 954 | image_tag: class: 'slideshow__image' }}
+        {% endunless %}
+      </swiper-slide>
+    {% endfor %}
+  </swiper-container>
+
+  <swiper-container
+    class="slideshow__content-slider"
+    data-target="slideshow-section.content-slider"
+    effect="fade"
+    allow-touch-move="false"
+  >
+    <swiper-slide></swiper-slide>
+
+    {% for block in section.blocks %}
+      <swiper-slide>
+        <div class="slideshow-content">
+          {% unless block.settings.subheading == empty %}
+            <p class="text-subheading">{{ block.settings.subheading }}</p>
+          {% endunless %}
+
+          {% unless block.settings.content == empty %}
+            <div class="text-h4">{{ block.settings.content }}</div>
+          {% endunless %}
+        </div>
+      </swiper-slide>
+    {% endfor %}
+  </swiper-container>
+
+  <div class="slideshow-navigation">
+    <button
+      class="slideshow-navigation__arrow button-reset"
+      type="button"
+      title="{{ 'accessibility.carousel.previous' | t }}"
+      data-target="slideshow-section.previous"
+    >
+      {% render 'icon-direction', icon: 'arrow-left' %}
+    </button>
+
+    <span class="slideshow-navigation__pagination text-subheading">
+      <span data-target="slideshow-section.pagination-current">1</span>/{{ section.blocks.size }}
+    </span>
+
+    <button
+      class="slideshow-navigation__arrow button-reset"
+      type="button"
+      title="{{ 'accessibility.carousel.next' | t }}"
+      data-target="slideshow-section.next"
+    >
+      {% render 'icon-direction', icon: 'arrow-right' %}
+    </button>
+  </div>
+</slideshow-section>
+
+{% schema %}
+{
+  "name": "t:sections.slideshow.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "start_button_label",
+      "label": "t:sections.slideshow.settings.start_button_label.label",
+      "default": "Learn more"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block",
+      "name": "t:sections.slideshow.blocks.slide.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:presets.settings.heading.label",
+          "default": "Heading"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:presets.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "t:presets.settings.subheading.label",
+          "default": "Subheading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:presets.settings.content.label",
+          "default": "<p>1. Lorem ipsum dolor sit</p><p>2. Nullam quis metus</p><p>3. Curabitur tincidunt</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.slideshow.name"
+    }
+  ]
+}
+{% endschema %}

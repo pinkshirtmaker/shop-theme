@@ -1,0 +1,59 @@
+{% comment %}
+  Renders an article summary.
+
+  Accepts:
+  - article: {Object} The article object.
+  - badges: {String} Comma separated list of badges.
+  - preload: {Boolean} Pre-loads the thumbnail image.
+
+  Usage:
+  {% render 'article-card', article: result %}
+{% endcomment %}
+
+{% liquid
+  assign badge_list = badges | split: ', '
+  assign loading = 'lazy'
+
+  if preload
+    assign loading = 'eager'
+  endif
+%}
+
+<div class="card">
+  <a
+    class="card__thumbnail"
+    href="{{ article.url }}"
+    style="--aspect-ratio: 452 / 361;  --background-color: var(--color-white-40);"
+  >
+    {% if badge_list.size != 0 %}
+      <ul class="card__badges badges list-reset">
+        {% for badge in badge_list %}
+          <li>{{ badge }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if article.image %}
+      {{
+        article.image
+        | image_url: width: 904, height: 722
+        | image_tag: class: 'card__image image', loading: loading, preload: preload
+      }}
+    {% endif %}
+  </a>
+
+  <div class="card__content">
+    <p class="text-subheading">{{ article.published_at | date: '%d.%m.%Y' }}</p>
+
+    <a class="text-h4 no-margin" href="{{ article.url }}">{{ article.title }}</a>
+
+    {% if article.excerpt_or_content %}
+      <p>{{ article.excerpt_or_content | strip_html | truncate: 116 }}</p>
+    {% endif %}
+
+    <a class="text-button" href="{{ article.url }}">
+      {{- 'sections.main_blog.article.read_more' | t }}
+      {% render 'growing-arrow' %}
+    </a>
+  </div>
+</div>

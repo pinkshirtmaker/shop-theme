@@ -1,0 +1,63 @@
+    {%- assign checkLocale = request.locale.iso_code | prepend: '/' | append: '/' -%}
+    {%- assign locale = request.locale.iso_code | prepend: '/' -%}
+    {%- assign new_canonical_url = blank -%}
+
+    {%- if request.page_type == 'product' and product.metafields.meetanshi.canonical_url.value != blank -%}
+      {%- if product.metafields.meetanshi.canonical_url.value contains request.host or product.metafields.meetanshi.canonical_url.value contains 'https://' or product.metafields.meetanshi.canonical_url.value contains 'www.' -%}
+        {%- assign new_canonical_url = product.metafields.meetanshi.canonical_url.value -%}
+      {%- else -%}
+        {%- if request.path contains checkLocale -%}
+          {%- assign new_canonical_url = product.metafields.meetanshi.canonical_url.value | prepend: locale | prepend: request.origin -%}
+        {%- else -%}
+          {%- assign new_canonical_url = product.metafields.meetanshi.canonical_url.value | prepend: request.origin -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- elsif request.page_type == 'collection' or request.page_type == 'list-collections' -%}
+      {%- if collection.metafields.meetanshi.canonical_url.value != blank -%}
+        {%- if collection.metafields.meetanshi.canonical_url.value contains request.host or collection.metafields.meetanshi.canonical_url.value contains 'https://' or collection.metafields.meetanshi.canonical_url.value contains 'www.' -%}
+          {%- assign new_canonical_url = collection.metafields.meetanshi.canonical_url.value -%}
+        {%- else -%}
+          {%- if request.path contains checkLocale -%}
+            {%- assign new_canonical_url = collection.metafields.meetanshi.canonical_url.value | prepend: locale | prepend: request.origin -%}
+          {%- else -%}
+            {%- assign new_canonical_url = collection.metafields.meetanshi.canonical_url.value | prepend: request.origin -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- elsif request.page_type == 'page' and page.metafields.meetanshi.canonical_url.value != blank -%}
+      {%- if page.metafields.meetanshi.canonical_url.value contains request.host or page.metafields.meetanshi.canonical_url.value contains 'https://' or page.metafields.meetanshi.canonical_url.value contains 'www.' -%}
+        {%- assign new_canonical_url = page.metafields.meetanshi.canonical_url.value -%}
+      {%- else -%}
+        {%- if request.path contains checkLocale -%}
+          {%- assign new_canonical_url = page.metafields.meetanshi.canonical_url.value | prepend: locale | prepend: request.origin -%}
+        {%- else -%}
+          {%- assign new_canonical_url = page.metafields.meetanshi.canonical_url.value | prepend: request.origin -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- elsif request.page_type == 'article' and article.metafields.meetanshi.canonical_url.value != blank -%}
+      {%- if article.metafields.meetanshi.canonical_url.value contains request.host or article.metafields.meetanshi.canonical_url.value contains 'https://' or article.metafields.meetanshi.canonical_url.value contains 'www.' -%}
+        {%- assign new_canonical_url = article.metafields.meetanshi.canonical_url.value -%}
+      {%- else -%}
+        {%- if request.path contains checkLocale -%}
+          {%- assign new_canonical_url = article.metafields.meetanshi.canonical_url.value | prepend: locale | prepend: request.origin -%}
+        {%- else -%}
+          {%- assign new_canonical_url = article.metafields.meetanshi.canonical_url.value | prepend: request.origin -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- elsif request.page_type == 'blog' and blog.metafields.meetanshi.canonical_url.value != blank -%}
+      {%- if blog.metafields.meetanshi.canonical_url.value contains request.host or blog.metafields.meetanshi.canonical_url.value contains 'https://' or blog.metafields.meetanshi.canonical_url.value contains 'www.' -%}
+        {%- assign new_canonical_url = blog.metafields.meetanshi.canonical_url.value -%}
+      {%- else -%}
+        {%- if request.path contains checkLocale -%}
+          {%- assign new_canonical_url = blog.metafields.meetanshi.canonical_url.value | prepend: locale | prepend: request.origin -%}
+        {%- else -%}
+          {%- assign new_canonical_url = blog.metafields.meetanshi.canonical_url.value | prepend: request.origin -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if new_canonical_url != blank -%}
+      {%- assign canonical_url = new_canonical_url -%}
+    {%- endif -%}
+
+    {{ canonical_url }}

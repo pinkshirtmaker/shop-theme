@@ -1,0 +1,190 @@
+{{ 'collection-blocks.css' | asset_url | stylesheet_tag }}
+
+{% unless section.blocks.size == 0 %}
+  <div class="collection-blocks">
+    {% for block in section.blocks %}
+      {% liquid
+        assign block_tag = 'div'
+
+        unless block.settings.url == null
+          assign block_tag = 'a'
+        endunless
+      %}
+
+      <{{ block_tag }}
+        class="collection-block"
+        {% unless block.settings.url == null %}
+          href="{{ block.settings.url }}"
+        {% endunless %}
+
+        style="
+          {% unless block.settings.text_color == blank %}
+            color: {{ block.settings.text_color }};
+          {% endunless %}
+        "
+
+        {{ block.shopify_attributes }}
+      >
+        {% unless block.settings.heading == empty and block.settings.button_label == empty %}
+          <div class="collection-block__content">
+            {% unless block.settings.heading == empty %}
+              <p class="collection-block__heading text-h3">{{ block.settings.heading }}</p>
+            {% endunless %}
+
+            {% unless block.settings.button_label == empty %}
+              <p class="text-button">
+                {{ block.settings.button_label }}
+                {% render 'growing-arrow' %}
+              </p>
+            {% endunless %}
+          </div>
+        {% endunless %}
+
+        {% unless block.settings.image == null %}
+          <div
+            class="collection-block__background collection-block__primary-image"
+            style="
+              --position: {{ block.settings.image_position }};
+              --overlay-opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }};
+            "
+          >
+            {{ block.settings.image | image_url: width: 1440 | image_tag: class: 'collection-block__image' }}
+          </div>
+        {% endunless %}
+
+        {% unless block.settings.hover_image == null %}
+          <div
+            class="collection-block__background collection-block__hover-image"
+            style="
+              --position: {{ block.settings.hover_image_position }};
+              --overlay-opacity: {{ block.settings.hover_image_overlay_opacity | divided_by: 100.0 }};
+            "
+          >
+            {{ block.settings.hover_image | image_url: width: 1440 | image_tag: class: 'collection-block__image' }}
+          </div>
+        {% endunless %}
+      </{{ block_tag }}>
+    {% endfor %}
+  </div>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "t:sections.collection-blocks.name",
+  "blocks": [
+    {
+      "type": "block",
+      "name": "t:sections.collection-blocks.blocks.block.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:presets.settings.heading.label",
+          "default": "Block heading"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:presets.settings.button_label.label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:presets.settings.link.label",
+          "default": "/collections/all"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:presets.settings.text_color.label"
+        },
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:presets.settings.image.label"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "t:sections.collection-blocks.blocks.block.settings.image_position.label",
+          "options": [
+            {
+              "value": "top",
+              "label": "t:presets.settings.vertical_position.options.top.label"
+            },
+            {
+              "value": "center",
+              "label": "t:presets.settings.vertical_position.options.middle.label"
+            },
+            {
+              "value": "bottom",
+              "label": "t:presets.settings.vertical_position.options.bottom.label"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "range",
+          "id": "image_overlay_opacity",
+          "label": "t:presets.settings.overlay_opacity.label",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 15,
+          "unit": "%"
+        },
+        {
+          "type": "header",
+          "content": "Hover image"
+        },
+        {
+          "type": "image_picker",
+          "id": "hover_image",
+          "label": "t:presets.settings.image.label"
+        },
+        {
+          "type": "select",
+          "id": "hover_image_position",
+          "label": "t:sections.collection-blocks.blocks.block.settings.image_position.label",
+          "options": [
+            {
+              "value": "top",
+              "label": "t:presets.settings.vertical_position.options.top.label"
+            },
+            {
+              "value": "center",
+              "label": "t:presets.settings.vertical_position.options.middle.label"
+            },
+            {
+              "value": "bottom",
+              "label": "t:presets.settings.vertical_position.options.bottom.label"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "range",
+          "id": "hover_image_overlay_opacity",
+          "label": "t:presets.settings.overlay_opacity.label",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 15,
+          "unit": "%"
+        }
+      ],
+      "limit": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection-blocks.name"
+    }
+  ]
+}
+{% endschema %}

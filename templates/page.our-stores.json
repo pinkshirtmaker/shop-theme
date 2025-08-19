@@ -1,0 +1,211 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading_cf3fGY": {
+          "type": "heading",
+          "settings": {
+            "subheading": "",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit lobortis amet, dui nunc pulvinar. Mi amet sit donec nibh gravida lorns pharetra orci orci posuere.",
+            "heading_tag": "h4"
+          }
+        },
+        "image_mrVatY": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/86da26b1f3f149f8d39fd075ecc13530.jpg",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "heading_cf3fGY",
+        "image_mrVatY"
+      ],
+      "settings": {
+        "show_breadcrumb": true,
+        "subheading": "",
+        "heading": "Our Stores",
+        "use_page_title": false,
+        "subcontent": "",
+        "button_label": "",
+        "button_url": "",
+        "border_top_mobile": false,
+        "border_top_desktop": false
+      }
+    },
+    "main_page_h36thj": {
+      "type": "main-page",
+      "blocks": {
+        "heading_NtUwhd": {
+          "type": "heading",
+          "settings": {
+            "subheading": "",
+            "text": "Store name",
+            "heading_tag": "h2"
+          }
+        },
+        "heading_mHm3Ei": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Address",
+            "text": "106 Jermyn Street, London, SW1Y 6EE",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_wreBGz": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Opening times",
+            "text": "Monday to Saturday: 10:30am–6:30pm Sunday: Closed",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_QMGqRM": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Phone number",
+            "text": "+44 (0) 7927 815144",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_9y7wQt": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Email",
+            "text": "<a href=\"mailto:jermynst@thomaspink.com\" title=\"mailto:jermynst@thomaspink.com\">jermynst@thomaspink.com</a>",
+            "heading_tag": "h4"
+          }
+        },
+        "button_A9NWBp": {
+          "type": "button",
+          "settings": {
+            "label": "Learn more",
+            "url": "shopify://collections/all"
+          }
+        },
+        "image_MMe6eH": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/09a45737e304814e24ba96d1b1c3fccb.jpg",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "heading_NtUwhd",
+        "heading_mHm3Ei",
+        "heading_wreBGz",
+        "heading_QMGqRM",
+        "heading_9y7wQt",
+        "button_A9NWBp",
+        "image_MMe6eH"
+      ],
+      "settings": {
+        "show_breadcrumb": false,
+        "subheading": "",
+        "heading": "",
+        "use_page_title": false,
+        "subcontent": "",
+        "button_label": "",
+        "button_url": "",
+        "border_top_mobile": false,
+        "border_top_desktop": true
+      }
+    },
+    "main_page_W8YVki": {
+      "type": "main-page",
+      "blocks": {
+        "heading_AQDjw4": {
+          "type": "heading",
+          "settings": {
+            "subheading": "",
+            "text": "Store name",
+            "heading_tag": "h2"
+          }
+        },
+        "heading_nHGEXL": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Address",
+            "text": "106 Jermyn Street, London, SW1Y 6EE",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_4nRdPK": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Opening times",
+            "text": "Monday to Saturday: 10:30am–6:30pm Sunday: Closed",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_QiKCyq": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Phone number",
+            "text": "+44 (0) 7927 815144",
+            "heading_tag": "h4"
+          }
+        },
+        "heading_FcNkMg": {
+          "type": "heading",
+          "settings": {
+            "subheading": "Email",
+            "text": "<a href=\"mailto:jermynst@thomaspink.com\" title=\"mailto:jermynst@thomaspink.com\">jermynst@thomaspink.com</a>",
+            "heading_tag": "h4"
+          }
+        },
+        "button_h7KJU9": {
+          "type": "button",
+          "settings": {
+            "label": "Learn more",
+            "url": "shopify://collections/all"
+          }
+        },
+        "image_eDVki8": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/09a45737e304814e24ba96d1b1c3fccb.jpg",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "heading_AQDjw4",
+        "heading_nHGEXL",
+        "heading_4nRdPK",
+        "heading_QiKCyq",
+        "heading_FcNkMg",
+        "button_h7KJU9",
+        "image_eDVki8"
+      ],
+      "settings": {
+        "show_breadcrumb": false,
+        "subheading": "",
+        "heading": "",
+        "use_page_title": false,
+        "subcontent": "",
+        "button_label": "",
+        "button_url": "",
+        "border_top_mobile": false,
+        "border_top_desktop": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "main_page_h36thj",
+    "main_page_W8YVki"
+  ]
+}

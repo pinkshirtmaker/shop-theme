@@ -1,0 +1,134 @@
+{% liquid
+  assign enabled = false
+  assign product_id = product.id
+  assign heading = section.settings.heading
+  assign top_border = false
+
+  if request.page_type == 'cart'
+    unless cart.item_count == 0
+      assign product_id = cart.items.first.product_id
+    endunless
+  endif
+
+  if product_id
+    assign enabled = true
+  endif
+
+  if heading == empty
+    case recommendations.intent
+      when 'related'
+        assign heading = 'sections.product_recommendations.related' | t
+
+      when 'complementary'
+        assign heading = 'sections.product_recommendations.complementary' | t
+    endcase
+  endif
+
+  unless section.index0 == 0
+    assign top_border = true
+  endunless
+%}
+
+<script src="{{ 'product-recommendations.js' | asset_url }}" type="module" defer></script>
+
+<product-recommendations
+  class="fade-in"
+  {% if enabled %}
+    recommendations-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit=4&intent={{ section.settings.intent }}"
+  {% endif %}
+  section-id="{{ section.id }}"
+  cart-keys="{{ cart.items | map: 'key' | join: '+' }}"
+  context="{{ request.page_type }}"
+>
+  {% if enabled %}
+    {% if recommendations.performed? and recommendations.products_count >= 1 %}
+      {% render 'product-slider', heading: heading, products: recommendations.products, top_border: top_border %}
+    {% endif %}
+  {% else %}
+    {% liquid
+      assign fallback_products = section.settings.fallback_products
+      assign fallback_heading = section.settings.fallback_heading | default: heading
+      assign fallback_products_limit = null
+
+      unless section.settings.fallback_collection == blank
+        assign fallback_products = section.settings.fallback_collection.products
+        assign fallback_products_limit = section.settings.fallback_collection_product_limit
+      endunless
+    %}
+
+    {% unless fallback_products.count == 0 %}
+      {% render 'product-slider',
+        heading: fallback_heading,
+        products: fallback_products,
+        top_border: top_border,
+        limit: fallback_products_limit
+      %}
+    {% endunless %}
+  {% endif %}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "t:sections.product-recommendations.name",
+  "class": "section-margin",
+  "settings": [
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "t:sections.product-recommendations.settings.intent.label",
+      "info": "t:sections.product-recommendations.settings.intent.info",
+      "options": [
+        {
+          "label": "t:sections.product-recommendations.settings.intent.options.related.label",
+          "value": "related"
+        },
+        {
+          "label": "t:sections.product-recommendations.settings.intent.options.complementary.label",
+          "value": "complementary"
+        }
+      ],
+      "default": "related"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "info": "t:sections.product-recommendations.settings.heading.info"
+    },
+    {
+      "type": "header",
+      "content": "Fallback state"
+    },
+    {
+      "type": "paragraph",
+      "content": "Used when there is no default product"
+    },
+    {
+      "type": "text",
+      "id": "fallback_heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "product_list",
+      "id": "fallback_products",
+      "label": "t:presets.settings.products.label"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "t:presets.settings.collection.label",
+      "info": "t:presets.settings.collection.info"
+    },
+    {
+      "type": "range",
+      "id": "fallback_collection_product_limit",
+      "label": "t:presets.settings.collection_product_limit.label",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

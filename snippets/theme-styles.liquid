@@ -1,0 +1,42 @@
+<style>
+  {{ 'fonts.css' | inline_asset_content }}
+  {{ 'typography.css' | inline_asset_content }}
+  {{ 'layout.css' | inline_asset_content }}
+</style>
+
+{{ 'utilities.css' | asset_url | stylesheet_tag }}
+
+{{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+
+{{ 'line-item.css' | asset_url | stylesheet_tag }}
+{{ 'quick-links.css' | asset_url | stylesheet_tag }}
+{{ 'main-product.css' | asset_url | stylesheet_tag }}
+{{ 'product-form.css' | asset_url | stylesheet_tag }}
+{{ 'pick-up.css' | asset_url | stylesheet_tag }}
+{{ 'product-gallery.css' | asset_url | stylesheet_tag }}
+{{ 'quick-buy.css' | asset_url | stylesheet_tag }}
+
+{% if request.page_type == 'collection' or request.page_type == 'search' %}
+  {{ 'filter-form.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if request.page_type contains 'customers' %}
+  {{ 'account.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+<style>
+  {% if request.page_type == 'captcha' %}
+    .shopify-challenge__container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-16);
+      padding: var(--spacing-96) 0;
+    }
+
+    .shopify-challenge__container form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-8);
+    }
+  {% endif %}
+</style>

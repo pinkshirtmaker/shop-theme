@@ -1,0 +1,169 @@
+{% comment %}
+  Renders a product summary.
+
+  Accepts:
+  - product: {Object} The product object.
+  - preload: {Boolean} Pre-loads the thumbnail image.
+
+  Usage:
+  {% render 'product-card', product: result %}
+{% endcomment %}
+
+{% liquid
+  assign ratio = settings.product_card_thumbnail_aspect_ratio | default: product.featured_image.aspect_ratio
+  assign on_sale = false
+  assign loading = 'lazy'
+  assign sale_text = 'product_card.sale' | t
+  assign hover_image = product.images[1]
+
+  if preload
+    assign loading = 'eager'
+  endif
+
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+%}
+
+<div class="product-card card">
+  <a
+    class="card__thumbnail"
+    href="{{ product.url }}"
+    style="
+      --aspect-ratio: {{ ratio }};
+
+      {% unless settings.product_card_thumbnail_background_color == blank %}
+        --background-color: {{ settings.product_card_thumbnail_background_color }};
+      {% endunless %}
+    "
+  >
+{% comment %} Render the dynamic discount badge with TP Colours on badge {% endcomment %}
+    {% if on_sale %}
+     {% assign first_variant = product.variants.first %}
+{% assign compare_at = first_variant.compare_at_price %}
+{% assign price = first_variant.price %}
+
+{% if compare_at > price %}
+  {% assign discount = compare_at | minus: price %}
+  {% assign discount_percentage = discount | times: 100 | divided_by: compare_at %}
+  {% assign badge_title = discount_percentage | floor | append: '% OFF' %}
+
+  {% render 'badge',
+    title: badge_title,
+    class: 'card__badge',
+    background_color: '#BE8383',
+    text_color: 'var(--color-white)'
+  %}
+{% elsif product.metafields.custom.badge %}
+  {% render 'badge',
+    title: product.metafields.custom.badge.value.title,
+    background_color: product.metafields.custom.badge.value.background_color,
+    class: 'card__badge'
+  %}
+ {% endif %}
+    {% endif %}
+
+    <quick-buy-button product-handle="{{ product.handle }}">
+      <button
+        class="quick-buy-button button-reset text-subheading"
+        data-target="quick-buy-button.button"
+        type="button"
+        title="{{ 'quick_buy.title' | t }}"
+      >
+        {% render 'icon-misc', icon: 'shopping-bag' %}
+
+        <span class="quick-buy-button__title">{{ 'quick_buy.title' | t }} +</span>
+      </button>
+    </quick-buy-button>
+
+    {% if product.featured_image %}
+      {{
+        product.featured_image
+        | image_url: width: 676
+        | image_tag: loading: loading, preload: preload, class: 'card__image card__primary-image image'
+      }}
+
+      {% if hover_image %}
+        {{
+          hover_image
+          | image_url: width: 676
+          | image_tag: class: 'card__image card__hover-image image', loading: 'auto'
+        }}
+      {% endif %}
+    {% endif %}
+  </a>
+
+  <a class="card__title" href="{{ product.url }}">{{ product.title }}</a>
+
+  {% comment %} Custom inline block to render markdowns on collection pages and carousels {% endcomment %}
+
+  {% assign first_variant = product.variants.first %}
+
+<div class="card__price">
+  {% if first_variant.compare_at_price > first_variant.price %}
+    <span class="price--compare">
+      <s>{{ first_variant.compare_at_price | money_without_trailing_zeros }}</s>
+    </span>
+    <span class="price--sale">{{ first_variant.price | money_without_trailing_zeros }}</span>
+  {% else %}
+    <span class="price--regular">{{ first_variant.price | money_without_trailing_zeros }}</span>
+  {% endif %}
+</div>
+
+  {% unless product.metafields.custom.linked_products_colour == blank
+    or product.metafields.custom.linked_products_colour.value.count == 0
+  %}
+    {% liquid
+      assign limit = 4
+      assign additional = product.metafields.custom.linked_products_colour.value.count | minus: limit
+
+      assign limit_desktop = 6
+      assign additional_desktop = product.metafields.custom.linked_products_colour.value.count | minus: limit_desktop
+    %}
+
+    <ul class="card__swatches list-reset">
+      {% for linked_product in product.metafields.custom.linked_products_colour.value limit: limit_desktop %}
+        {% liquid
+          assign linked_product_swatch_image = linked_product.images.last
+          assign linked_product_swatch_color = linked_product.metafields.custom.this_product_colour.value
+
+          for image in linked_product.images
+            assign sanitized_image_alt = image.alt | downcase
+
+            if sanitized_image_alt == 'swatch'
+              assign linked_product_swatch_image = image
+            endif
+          endfor
+        %}
+
+        <a
+          class="swatch swatch--small {% if linked_product == product %}is-active{% endif %}"
+          href="{{ linked_product.url }}"
+          style="
+            {% if linked_product_swatch_image %}
+              --image: url('{{ linked_product_swatch_image | image_url: width: 64, height: 64 }}');
+            {% endif %}
+
+            {% if linked_product_swatch_color %}
+              --color: {{ linked_product_swatch_color }};
+            {% endif %}
+          "
+        >
+          <span class="visually-hidden">{{ linked_product.title }}</span>
+        </a>
+      {% endfor %}
+
+      {% unless additional <= 0 and additional_desktop <= 0 %}
+        {% unless additional <= 0 %}
+          <a class="card__swatches-additional" href="{{ product.url }}">+{{ additional }}</a>
+        {% endunless %}
+
+        {% unless additional_desktop <= 0 %}
+          <a class="card__swatches-additional card__swatches-additional--desktop" href="{{ product.url }}"
+            >+{{ additional_desktop -}}
+          </a>
+        {% endunless %}
+      {% endunless %}
+    </ul>
+  {% endunless %}
+</div>

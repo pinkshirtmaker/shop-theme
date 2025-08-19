@@ -1,0 +1,32 @@
+
+
+
+
+
+
+@font-face {
+  font-display: swap;
+  font-family: 'Libertinus Serif';
+  src: url('//thomaspink.com/cdn/shop/t/2/assets/LibertinusSerif-Regular.otf?v=77404335862478509431729113894') format('opentype');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Manrope';
+  font-weight: 500;
+  src: url('//thomaspink.com/cdn/shop/t/2/assets/Manrope-Medium.ttf?v=127619656552835520031729113897') format('truetype');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Manrope';
+  font-weight: 600;
+  src: url('//thomaspink.com/cdn/shop/t/2/assets/Manrope-SemiBold.ttf?v=148685998733060911121729113898') format('truetype');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Manrope';
+  font-weight: 700;
+  src: url('//thomaspink.com/cdn/shop/t/2/assets/Manrope-Bold.ttf?v=182593172332733270241729113896') format('truetype');
+}

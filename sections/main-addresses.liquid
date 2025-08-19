@@ -1,0 +1,84 @@
+<section class="main-account container">
+  {{ 'sections.main_addresses.return_link' | t | link_to: routes.account_url, class: 'text-link main-account__return' }}
+
+  <h1 class="text-h4">{{ 'sections.main_addresses.title' | t }}</h1>
+
+  <button class="button button--small" data-toggle="new-address">Add a new address</button>
+
+  <toggle-element
+    class="drawer"
+    data-namespace="new-address"
+  >
+    <div class="drawer__container">
+      <div class="drawer__body padding">
+        {%
+          render 'address-form' with
+          address: customer.new_address,
+          title_tag: 'h2'
+        %}
+      </div>
+    </div>
+  </toggle-element>
+
+  {% paginate customer.addresses by section.settings.addresses_per_page %}
+    <ul class="main-account__addresses list-reset grid">
+      {% for address in customer.addresses %}
+        <li class="main-account__address col xs12 l4">
+          {% if address == customer.default_address %}
+            <p class="label no-margin">{{ 'sections.main_addresses.default_address' | t }}</p>
+          {% endif %}
+
+          {{ address | format_address }}
+
+          <div class="button-group button-group--inline">
+            <button class="button button--small button--secondary" data-toggle="{{ address.id }}">Edit</button>
+
+            <form
+              action="{{ routes.account_addresses_url }}/{{ address.id }}"
+              method="POST"
+            >
+              <input
+                name="_method"
+                type="hidden"
+                value="delete"
+              >
+
+              <button class="button button--small button--outlined">{{ 'sections.main_addresses.delete' | t }}</button>
+            </form>
+          </div>
+
+          <toggle-element
+            class="drawer"
+            data-namespace="{{ address.id }}"
+          >
+            <div class="drawer__container">
+              <div class="drawer__body padding">
+                {% render 'address-form', address: address %}
+              </div>
+            </div>
+          </toggle-element>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="pagination">
+      {{ paginate | default_pagination }}
+    </div>
+  {% endpaginate %}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-addresses.name",
+  "settings": [
+    {
+      "type": "range",
+      "id": "addresses_per_page",
+      "label": "t:sections.main-addresses.settings.addresses_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

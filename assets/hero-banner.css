@@ -1,0 +1,247 @@
+.hero-banner {
+  --color-invert: var(--color-white);
+  --color: var(--color-black);
+  color: var(--color);
+  height: var(--height);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-banner--media {
+  --color-invert: var(--color-black);
+  --color: var(--color-white);
+}
+
+.hero-banner__background {
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--media-position);
+  width: 100%;
+}
+
+.hero-banner__content {
+  align-items: var(--align-items, start);
+  color: currentColor;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  max-width: 100%;
+  padding: var(--spacing-32) var(--spacing-16);
+  position: absolute;
+  text-align: var(--text-align, left);
+  width: max-content;
+  z-index: 2;
+}
+
+.hero-banner__content--align-left {
+  --text-align: left;
+  --align-items: start;
+}
+
+.hero-banner__content--align-center {
+  --text-align: center;
+  --align-items: center;
+}
+
+.hero-banner__content--align-right {
+  --text-align: right;
+  --align-items: end;
+}
+
+.hero-banner__content--default-position {
+  bottom: 0;
+  left: 0;
+  right: unset;
+  top: unset;
+}
+
+.hero-banner__buttons {
+  display: flex;
+  gap: var(--spacing-12);
+}
+
+.hero-banner__buttons:not(:first-child) {
+  margin-block-start: var(--spacing-16);
+}
+
+.hero-banner__content--top-left {
+  bottom: unset;
+  left: 0;
+  right: unset;
+  top: 0;
+}
+
+.hero-banner__content--middle-left {
+  bottom: unset;
+  left: 0;
+  right: unset;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hero-banner__content--bottom-left {
+  bottom: 0;
+  left: 0;
+  right: unset;
+  top: unset;
+}
+
+.hero-banner__content--top-center {
+  bottom: unset;
+  left: 50%;
+  right: unset;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.hero-banner__content--middle-center {
+  bottom: unset;
+  left: 50%;
+  right: unset;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hero-banner__content--bottom-center {
+  bottom: 0;
+  left: 50%;
+  right: unset;
+  top: unset;
+  transform: translateX(-50%);
+}
+
+.hero-banner__content--top-right {
+  bottom: unset;
+  left: unset;
+  right: 0;
+  top: 0;
+}
+
+.hero-banner__content--middle-right {
+  bottom: unset;
+  left: unset;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hero-banner__content--bottom-right {
+  bottom: 0;
+  left: unset;
+  right: 0;
+  top: unset;
+}
+
+.hero-banner--media::before {
+  background-color: var(--color-black);
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  opacity: var(--media-overlay-opacity);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+@media (min-width: 768px) {
+  .hero-banner {
+    height: var(--height-desktop);
+  }
+
+  .hero-banner__content {
+    max-width: 500px;
+    padding-inline: var(--spacing-32);
+  }
+
+  .hero-banner__content--align-left-desktop {
+    --text-align: left;
+    --align-items: start;
+  }
+
+  .hero-banner__content--align-center-desktop {
+    --text-align: center;
+    --align-items: center;
+  }
+
+  .hero-banner__content--align-right-desktop {
+    --text-align: right;
+    --align-items: end;
+  }
+
+  .hero-banner__content--top-left-desktop {
+    bottom: unset;
+    left: 0;
+    right: unset;
+    top: 0;
+    transform: none;
+  }
+
+  .hero-banner__content--middle-left-desktop {
+    bottom: unset;
+    left: 0;
+    right: unset;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .hero-banner__content--bottom-left-desktop {
+    bottom: 0;
+    left: 0;
+    right: unset;
+    top: unset;
+    transform: none;
+  }
+
+  .hero-banner__content--top-center-desktop {
+    bottom: unset;
+    left: 50%;
+    right: unset;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  .hero-banner__content--middle-center-desktop {
+    bottom: unset;
+    left: 50%;
+    right: unset;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-banner__content--bottom-center-desktop {
+    bottom: 0;
+    left: 50%;
+    right: unset;
+    top: unset;
+    transform: translateX(-50%);
+  }
+
+  .hero-banner__content--top-right-desktop {
+    bottom: unset;
+    left: unset;
+    right: 0;
+    top: 0;
+    transform: none;
+  }
+
+  .hero-banner__content--middle-right-desktop {
+    bottom: unset;
+    left: unset;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .hero-banner__content--bottom-right-desktop {
+    bottom: 0;
+    left: unset;
+    right: 0;
+    top: unset;
+    transform: none;
+  }
+
+  .hero-banner__buttons:not(:first-child) {
+    margin-block-start: var(--spacing-8);
+  }
+}

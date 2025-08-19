@@ -1,0 +1,61 @@
+{% comment %}
+  Renders product pricing for consistent display.
+
+  Accepts:
+  - product: {Object} The product object.
+  - variant: {Object} The variant object.
+  - price: {Number} The price value.
+  - compare_at: {Number} The compare at price value.
+  - context: {String} The context the price is used (currently supports `card` only).
+  - attributes: {String} Custom attributes to add.
+
+  Usage:
+  {% render 'product-price', product: product %}
+{% endcomment %}
+
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+
+  if variant
+    assign selected_variant = variant
+  endif
+%}
+
+<div class="product-price {{ class }}" {{ attributes }}>
+  {% liquid
+    assign compare_at = compare_at | default: selected_variant.compare_at_price
+    assign price = price | default: selected_variant.price
+    assign price_money = price | money_without_trailing_zeros
+  %}
+
+  <p class="product-price__main">
+    {% if compare_at > price %}
+      <s>{{ compare_at | money_without_trailing_zeros }}</s>
+    {% endif %}
+
+    {% if product.price_varies and context == 'card' %}
+      {{ 'product_price.from' | t: price: price_money }}
+
+    {% else %}
+      {{ price_money }}
+    {% endif %}
+  </p>
+
+  {% if selected_variant.unit_price %}
+    <small
+      class="
+        {% if selected_variant.unit_price_measurement == nil %}
+          visually-hidden
+        {% endif %}
+      "
+    >
+      {{ selected_variant.unit_price | money_without_trailing_zeros }} /
+
+      {% if selected_variant.unit_price_measurement.reference_value != 1 %}
+        {{ selected_variant.unit_price_measurement.reference_value }}
+      {% endif %}
+
+      {{ selected_variant.unit_price_measurement.reference_unit }}
+    </small>
+  {% endif %}
+</div>

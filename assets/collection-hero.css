@@ -1,0 +1,95 @@
+/**
+ * Collection hero.
+ */
+.collection-hero {
+  padding-block: var(--spacing-24) var(--spacing-32);
+}
+
+.collection-hero .breadcrumb {
+  margin-block-end: var(--spacing-16);
+}
+
+.collection-hero__content,
+.collection-hero__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+}
+
+.collection-hero__header {
+  gap: var(--spacing-16);
+}
+
+.collection-description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.collection-description__content {
+  --line-clamp: 4;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: var(--line-clamp);
+  -webkit-box-orient: vertical;
+}
+
+.collection-description.is-active .collection-description__content {
+  --line-clamp: unset;
+  overflow: visible;
+}
+
+.collection-description__button {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.collection-description__button .icon {
+  --size: 10px;
+}
+
+.collection-description__less {
+  display: none;
+}
+
+.collection-description.is-active .collection-description__button .collection-description__less {
+  display: block;
+}
+
+.collection-description.is-active .collection-description__button .collection-description__more {
+  display: none;
+}
+
+.collection-description:not(.is-overflowing) .collection-description__button {
+  display: none;
+}
+
+.collection-hero .quick-links {
+  --gutter: var(--container-gutter);
+}
+
+.collection-hero .quick-links__container {
+  justify-content: start;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-block: 0;
+  padding-inline: var(--gutter);
+}
+
+.collection-hero .quick-links.indicate-overflow::after {
+  margin-inline-end: calc(var(--gutter) * -1);
+}
+
+@media (min-width: 1024px) {
+  .collection-hero {
+    padding-block: var(--spacing-32);
+  }
+
+  .collection-hero .breadcrumb {
+    margin-block-end: var(--spacing-32);
+  }
+
+  .collection-hero .quick-links {
+    --gutter: var(--container-gutter-desktop);
+  }
+}

@@ -1,0 +1,293 @@
+{% liquid
+  assign has_header_block = false
+
+  for block in section.blocks
+    if block.type == 'header'
+      assign has_header_block = true
+    endif
+  endfor
+%}
+
+<main-product class="main-product" data-section-id="{{ section.id }}" data-product-handle="{{ product.handle }}">
+  <div class="container">
+    {% render 'breadcrumb', breadcrumb_items: product.metafields.custom.breadcrumb_items %}
+
+    <div class="main-product__grid">
+      <div
+        {% if product.media.size >= 1 %}
+          class="display-contents"
+        {% endif %}
+        data-target="main-product.gallery"
+      >
+        {% liquid
+          if product.media.size >= 1
+            render 'product-gallery', aspect_ratio: section.settings.gallery_aspect_ratio, background_color: section.settings.gallery_background_color
+          endif
+        %}
+      </div>
+
+      <aside class="main-product__aside">
+        {% if has_header_block %}
+          {% render 'product-form-header',
+            product: product,
+            selected_variant: product.selected_or_first_available_variant
+          %}
+        {% endif %}
+
+        {% render 'product-form',
+          blocks: section.blocks,
+          attributes: 'data-target="main-product.form"',
+          hide_header: true,
+          require_option_selection: true,
+          low_stock_threshold: section.settings.low_stock_threshold,
+          size_guide_url: section.settings.size_guide_url,
+          disable_add_to_cart_state: true
+        %}
+      </aside>
+    </div>
+  </div>
+
+  <toggle-element class="modal modal--small" data-namespace="{{ product.handle }}-notify">
+    <form class="main-product-notify" data-target="main-product.notify-form">
+      <div class="flex justify-between items-start">
+        <div class="main-product-notify__header">
+          <p class="text-h4">{{ product.title }}</p>
+          <p>{{ 'sections.main_product.notify_subheading' | t }}</p>
+        </div>
+
+        <button
+          class="main-product-notify__close button-reset"
+          type="button"
+          data-toggle="{{ product.handle }}-notify"
+          title="{{ 'sections.main_product.notify_close' | t }}"
+        >
+          {% render 'icon-misc', icon: 'close' %}
+        </button>
+      </div>
+
+      <div class="form-group">
+        <div class="styled-field">
+          <input id="notify-email" name="email" type="email" placeholder=" " required>
+          <label for="notify-email">{{ 'sections.main_product.notify_email_address' | t }}</label>
+        </div>
+
+        <div class="styled-field">
+          <label for="notify-variant">{{ 'sections.main_product.notify_variant' | t }}</label>
+
+          <select id="notify-variant" name="variant">
+            {% for variant in product.variants %}
+              {% unless variant.available %}
+                <option value="{{ variant.id }}">{{ variant.title }}</option>
+              {% endunless %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group__footer">
+          <p class="main-product-notify__success" data-target="main-product.notify-success">
+            {{ 'sections.main_product.notify_success' | t }}
+          </p>
+
+          <button
+            class="main-product-notify__submit button-reset button button--block button--loader"
+            data-target="main-product.notify-submit"
+          >
+            {{ 'sections.main_product.notify_submit' | t }}
+          </button>
+
+          <p class="main-product-notify__error" data-target="main-product.notify-error">
+            {{ 'sections.main_product.notify_error' | t }}
+          </p>
+        </div>
+      </div>
+    </form>
+  </toggle-element>
+
+  {% if product.metafields.custom.size_guide_modal %}
+    {% assign size_guide_modal = product.metafields.custom.size_guide_modal.value %}
+
+    <size-guide-modal
+      {% if size_guide_modal.size_guide_page %}
+        page-url="{{ size_guide_modal.size_guide_page.value.url }}"
+      {% endif %}
+    >
+      <toggle-element
+        class="modal"
+        data-namespace="{{ product.handle }}-size-guide-modal"
+        data-target="size-guide-modal.modal"
+      >
+        <div class="drawer__container">
+          <div class="drawer__header">
+            <p class="text-subheading">{{ 'size_guide_modal.heading' | t }}</p>
+
+            <button
+              class="drawer__close button-reset"
+              type="button"
+              data-toggle="{{ product.handle }}-size-guide-modal"
+              title="{{ 'size_guide_modal.close' | t }}"
+            >
+              {% render 'icon-misc', icon: 'close' %}
+            </button>
+          </div>
+
+          <div class="drawer__body">
+            <div class="fade-in" data-target="size-guide-modal.body">
+              {% if size_guide_modal.heading or size_guide_modal.introduction or size_guide_modal.supporting_content %}
+                <div class="container">
+                  <div class="grid margin--small">
+                    {% if size_guide_modal.heading %}
+                      <div class="col xs12 l6">
+                        <p class="text-h1 no-margin">{{ size_guide_modal.heading }}</p>
+                      </div>
+                    {% endif %}
+
+                    {% if size_guide_modal.introduction or size_guide_modal.supporting_content %}
+                      <div class="col xs12 l6 offset-l6">
+                        {% if size_guide_modal.introduction %}
+                          <div class="rte text-h4 no-margin">{{ size_guide_modal.introduction | metafield_tag }}</div>
+                        {% endif %}
+
+                        {% if size_guide_modal.supporting_content %}
+                          <div class="rte text-color-medium-grey">
+                            {{ size_guide_modal.supporting_content | metafield_tag }}
+                          </div>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if size_guide_modal.size_guide_page %}
+              <span class="loader is-active" data-target="size-guide-modal.loader"></span>
+            {% endif %}
+          </div>
+        </div>
+      </toggle-element>
+    </size-guide-modal>
+  {% endif %}
+</main-product>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {% if product.featured_media %}
+      "image": [
+        {{ product.featured_media | image_url: width: 1920 | prepend: "https:" | json }}
+      ],
+    {% endif %}
+    "description": {{ product.description | strip_html | json }},
+    {% unless product.selected_or_first_available_variant.sku == blank %}
+      "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {% endunless %}
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | json }}
+    },
+    "offers": [
+      {% for variant in product.variants %}
+        {% liquid
+          assign barcode_key = false
+          assign availability = 'OutOfStock'
+
+          if variant.barcode.size >= 12 and variant.barcode.size <= 14
+            assign barcode_key = 'gtin' | append: variant.barcode.size
+          endif
+
+          if variant.available
+            assign availability = 'InStock'
+          endif
+        %}
+
+        {
+          "@type": "Offer",
+          {% unless variant.sku == blank %}
+            "sku": {{ variant.sku | json }},
+          {% endunless %}
+          {% if barcode_key %}
+            {{ barcode_key | json }}: {{ variant.barcode | json }},
+          {% endif %}
+          "availability": "http://schema.org/{{ availability }}",
+          "price": {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-product.name",
+  "blocks": [
+    {
+      "type": "header",
+      "name": "t:sections.main-product.blocks.header.name",
+      "limit": 1
+    },
+    {
+      "type": "options",
+      "name": "t:sections.main-product.blocks.options.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-product.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "liquid",
+      "name": "t:sections.main-product.blocks.liquid.name",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "liquid",
+          "label": "t:presets.settings.liquid.label"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "delivery_information",
+      "label": "t:sections.main-product.settings.delivery_information.label"
+    },
+    {
+      "type": "url",
+      "id": "size_guide_url",
+      "label": "t:sections.main-product.settings.size_guide_url.label"
+    },
+    {
+      "type": "number",
+      "id": "low_stock_threshold",
+      "label": "t:sections.main-product.settings.low_stock_threshold.label",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Gallery"
+    },
+    {
+      "type": "text",
+      "id": "gallery_aspect_ratio",
+      "label": "t:sections.main-product.settings.gallery_aspect_ratio.label",
+      "info": "t:sections.main-product.settings.gallery_aspect_ratio.info",
+      "default": "5 / 6"
+    },
+    {
+      "type": "color",
+      "id": "gallery_background_color",
+      "label": "t:presets.settings.background_color.label"
+    }
+  ]
+}
+{% endschema %}

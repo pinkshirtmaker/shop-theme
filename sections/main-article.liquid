@@ -1,0 +1,240 @@
+{% liquid
+  assign related_articles_slides_count = 0
+  assign related_articles_heading = 'sections.main_article.related_articles' | t
+%}
+
+{% capture comment_template %}
+  <article class="main-article__comment" id="#id#">
+    #content#
+
+    <div class="main-article__comment-meta">
+      <span class="text-body-small">#author#</span>
+      <span class="text-body-small">#date#</span>
+    </div>
+  </article>
+{% endcapture %}
+
+{% capture related_articles_slides_slot %}
+  {% for related_article in blog.articles %}
+    {% liquid
+      assign is_related = false
+
+      unless related_article == article
+        for tag in article.tags
+          if related_article.tags contains tag
+            assign is_related = true
+          endif
+        endfor
+      endunless
+    %}
+
+    {% if is_related %}
+      {% assign related_articles_slides_count = related_articles_slides_count | plus: 1 %}
+
+      <swiper-slide>
+        {% render 'article-card', article: related_article %}
+      </swiper-slide>
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+
+{{ 'main-article.css' | asset_url | stylesheet_tag }}
+
+<article class="main-article">
+  <div class="container">
+    {% render 'breadcrumb' %}
+
+    <div class="main-article__grid grid">
+      <div class="col xs12 l6 offset-l3">
+        {% if article.image %}
+          {{ article.image | image_url: width: 2656 | image_tag: class: 'main-article__image' }}
+        {% endif %}
+
+        <p class="main-article__dates text-subheading">
+          {{ article.published_at | time_tag: '%d.%m.%Y' }} | {{ 'sections.main_article.updated_at' | t }}
+          {{ article.updated_at | time_tag: '%d.%m.%Y' }}
+        </p>
+
+        <h1 class="main-article__title no-margin">{{ article.title }}</h1>
+
+        {% unless article.tags.size == 0 %}
+          <ul class="main-article__tags list-reset">
+            {% for tag in article.tags %}
+              <li>
+                <a class="main-article__tag text-subheading" href="{{ blog.url }}/tagged/{{ tag | handleize }}">
+                  {{- tag -}}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endunless %}
+
+        <div class="main-article__content rte rte--large">
+          {{ article.content }}
+        </div>
+
+        {% if blog.previous_article or blog.next_article %}
+          <div class="main-article__navigation">
+            {% if blog.previous_article %}
+              <a class="text-button" href="{{ blog.previous_article.url }}">
+                {% render 'icon-direction', icon: 'arrow-left' %}
+                {{ 'sections.main_article.previous_article' | t }}
+              </a>
+            {% endif %}
+
+            {% if blog.next_article %}
+              <a class="text-button" href="{{ blog.next_article.url }}">
+                {{ 'sections.main_article.next_article' | t }}
+                {% render 'icon-direction', icon: 'arrow-right' %}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if blog.comments_enabled? %}
+          <div id="comments" class="main-article__comments">
+            {% if article.comments_count %}
+              <h2 class="main-article__comments-title text-h3">
+                {{ 'sections.main_article.comments.title' | t: count: article.comments_count }}
+              </h2>
+
+              {% paginate article.comments by section.settings.comments_per_page %}
+                {% unless article.comments.size == 0 %}
+                  <div class="main-article__comment-list">
+                    {% # theme-check-disable UndefinedObject %}
+                    {% if comment %}
+                      {% liquid
+                        assign form_success_string = 'sections.main_article.comments.form.success' | t
+
+                        if blog.moderated? and comment.status == 'unapproved'
+                          assign form_success_string = 'sections.main_article.comments.form.success_moderated' | t
+                        endif
+                      %}
+
+                      {% if comment.status == 'pending' and comment.content %}
+                        {% assign comment_date = comment.created_at | time_tag: format: 'date' %}
+
+                        {{
+                          comment_template
+                          | replace: '#content#', comment.content
+                          | replace: '#author#', comment.author
+                          | replace: '#date#', comment_date
+                        }}
+                      {% endif %}
+                    {% endif %}
+                    {% # theme-check-enable UndefinedObject %}
+
+                    {% for comment in article.comments %}
+                      {% assign comment_date = comment.created_at | time_tag: format: 'date' %}
+
+                      {{
+                        comment_template
+                        | replace: '#id#', comment.id
+                        | replace: '#content#', comment.content
+                        | replace: '#author#', comment.author
+                        | replace: '#date#', comment_date
+                      }}
+                    {% endfor %}
+                  </div>
+
+                  {% unless paginate.parts == 0 %}
+                    <div class="main-article__comments-pagination">
+                      {{ paginate | default_pagination }}
+                    </div>
+                  {% endunless %}
+                {% endunless %}
+              {% endpaginate %}
+            {% endif %}
+
+            {% form 'new_comment', article %}
+              <h3 class="text-h6">{{ 'sections.main_article.comments.form.title' | t }}</h3>
+
+              {{ form.errors | default_errors }}
+
+              {% if form.posted_successfully? %}
+                <p class="text-body-small success">{{ form_success_string }}</p>
+              {% endif %}
+
+              <div class="form-group">
+                <div class="form-group__field styled-field">
+                  <label for="{{ section.id | append: '-comment-author' }}">
+                    {{ 'sections.main_article.comments.form.author' | t }}
+                  </label>
+
+                  <input
+                    id="{{ section.id | append: '-comment-author' }}"
+                    name="comment[author]"
+                    type="text"
+                    value="{{ form.author }}"
+                    placeholder="{{ 'sections.main_article.comments.form.author' | t }}"
+                  >
+                </div>
+
+                <div class="form-group__field styled-field">
+                  <label for="{{ section.id | append: '-comment-email' }}">
+                    {{ 'sections.main_article.comments.form.email' | t }}
+                  </label>
+
+                  <input
+                    id="{{ section.id | append: '-comment-email' }}"
+                    name="comment[email]"
+                    type="email"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'sections.main_article.comments.form.email' | t }}"
+                  >
+                </div>
+
+                <div class="form-group__field styled-field">
+                  <label for="{{ section.id | append: '-comment-body' }}">
+                    {{ 'sections.main_article.comments.form.body' | t }}
+                  </label>
+
+                  <textarea
+                    id="{{ section.id | append: '-comment-body' }}"
+                    name="comment[body]"
+                    placeholder="{{ 'sections.main_article.comments.form.body' | t }}"
+                    rows="6"
+                  >
+                    {{- form.body -}}
+                  </textarea>
+                </div>
+
+                <div class="form-group__footer">
+                  <button class="button">{{ 'sections.main_article.comments.form.submit' | t }}</button>
+                </div>
+              </div>
+            {% endform %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% unless related_articles_slides_count == 0 %}
+    <div class="section-margin">
+      {% render 'product-slider',
+        heading: related_articles_heading,
+        slides_slot: related_articles_slides_slot,
+        slides_slot_count: related_articles_slides_count,
+        slides_per_view_desktop: 3.5,
+        top_border: true
+      %}
+    </div>
+  {% endunless %}
+</article>
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "settings": [
+    {
+      "type": "range",
+      "id": "comments_per_page",
+      "label": "t:sections.main-article.settings.comments_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

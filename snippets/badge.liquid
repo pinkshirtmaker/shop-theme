@@ -1,0 +1,20 @@
+{% comment %}
+  Renders a small badge wiht a title.
+
+  Accepts:
+  - title: {String} The badge title.
+  - text_color: {String} Optional text color.
+  - background_color: {String} Optional background color.
+
+  Usage:
+  {% render 'badge', title: product.metafields.custom.badge.value.title %}
+{% endcomment %}
+
+<p
+  class="badge text-subheading {{ class }}"
+  {% if background_color %}
+    style="--background-color: {{ background_color }}; {% if text_color %}color: {{ text_color }};{% endif %}"
+  {% endif %}
+>
+  {{ title }}
+</p>

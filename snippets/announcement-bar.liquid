@@ -1,0 +1,60 @@
+{% comment %}
+  Renders the header's announcement bar.
+
+  Accepts:
+  - background_color: {String} The background color.
+  - text_color: {String} The text color.
+  - heading: {String} The bar heading.
+  - subheading: {String} The bar subheading.
+  - link_text: {String} The custom link text.
+  - link_url: {String} The custom link target.
+
+  Usage:
+  {% render 'product-form', product: product %}
+{% endcomment %}
+
+<div
+  class="announcement-bar"
+  {% unless background_color == blank and text_color == blank %}
+    style="
+      {% unless background_color == blank %}
+        --background-color: {{ background_color }};
+      {% endunless %}
+
+      {% unless text_color == blank %}
+        --color: {{ text_color }};
+      {% endunless %}
+    "
+  {% endunless %}
+  data-target="site-header.announcement"
+>
+  <div
+    class="
+      announcement-bar__main
+      {% unless heading == empty or subheading == empty %}
+        announcement-bar__main--padded
+      {% endunless %}
+    "
+  >
+    {% unless heading == empty %}
+      <div class="announcement-bar__heading">{{ heading }}</div>
+    {% endunless %}
+
+    {% unless subheading == empty %}
+      <div class="announcement-bar__subheading">{{ subheading }}</div>
+    {% endunless %}
+  </div>
+
+  <div class="announcement-bar__right">
+    {% unless link_text == empty or link_url == empty %}
+      <a class="announcement-bar__link text-body-small" href="{{ link_url }}">
+        {{- link_text -}}
+      </a>
+    {% endunless %}
+
+    <button class="button-reset announcement-bar__link text-body-small" data-toggle="localization">
+      {{ localization.country.iso_code }}/
+      {{- localization.country.currency.symbol | append: localization.country.currency.iso_code }}
+    </button>
+  </div>
+</div>

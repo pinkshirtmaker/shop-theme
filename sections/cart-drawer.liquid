@@ -1,0 +1,218 @@
+{{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'cart-drawer.js' | asset_url }}" type="module" defer></script>
+
+<cart-drawer>
+  <toggle-element
+    class="cart-drawer drawer"
+    data-namespace="cart-drawer"
+    data-excluded-page-types="cart"
+    data-event="cart:added"
+  >
+    <div data-target="cart-drawer.recommendations">
+      {% if recommendations.performed? and recommendations.products_count >= 1 %}
+        <toggle-element
+          class="cart-drawer-recommendations drawer"
+          data-namespace="cart-drawer-recommendations"
+          keep-parent-open
+        >
+          <div class="drawer__container">
+            <div class="drawer__header">
+              <p class="text-subheading">{{ 'sections.cart_drawer.recommendations_title' | t }}</p>
+
+              <button
+                class="drawer__close button-reset"
+                data-toggle="cart-drawer-recommendations"
+                type="button"
+                title="Close recommendations"
+              >
+                {% render 'icon-misc', icon: 'close' %}
+              </button>
+            </div>
+
+            <div class="drawer__body">
+              {% for product in recommendations.products %}
+                {% render 'product-card', product: product %}
+              {% endfor %}
+            </div>
+          </div>
+        </toggle-element>
+      {% endif %}
+    </div>
+
+    <div class="drawer__container">
+      <div class="drawer__header">
+        <cart-section
+          class="display-contents"
+          section-name="{{ section.id }}"
+          part="header-count"
+          {% if cart.empty? %}
+            is-empty
+          {% endif %}
+        >
+          <p class="text-subheading no-margin">
+            {{ 'sections.cart_drawer.title' | t }} (<span data-target="cart-section.count">
+              {{- 'sections.cart_drawer.item_count' | t: count: cart.item_count -}}</span
+            >)
+          </p>
+        </cart-section>
+
+        <button class="drawer__close button-reset" data-toggle="cart-drawer">
+          <span class="visually-hidden">{{ 'sections.cart_drawer.close' | t }}</span>
+
+          {% render 'icon-misc', icon: 'close' %}
+        </button>
+      </div>
+
+      <cart-section
+        class="display-contents"
+        section-name="{{ section.id }}"
+        part="main"
+        {% if cart.empty? %}
+          is-empty
+        {% endif %}
+      >
+        <div class="drawer__body cart-drawer__body">
+          {% if cart.items.size == 0 %}
+            <div class="cart-drawer-empty">
+              {% unless section.settings.empty_cart_heading == empty %}
+                <p class="text-h4 no-margin">{{ section.settings.empty_cart_heading }}</p>
+              {% endunless %}
+
+              {% unless section.blocks.size == 0 %}
+                <div class="cart-drawer-empty__block">
+                  {% for block in section.blocks %}
+                    {% liquid
+                      assign label_tag = 'p'
+
+                      if block.settings.url
+                        assign label_tag = 'a'
+                      endif
+                    %}
+
+                    <div class="cart-drawer-empty__block">
+                      {% if block.settings.image %}
+                        {{
+                          block.settings.image
+                          | image_url: height: 734, width: 612
+                          | image_tag: loading: 'lazy'
+                          | link_to: block.settings.url
+                        }}
+                      {% endif %}
+
+                      {% unless block.settings.label == empty %}
+                        <{{ label_tag }}
+                          {% if block.settings.url %}
+                            href="{{ block.settings.url }}"
+                          {% endif %}
+                          class="text-button"
+                        >
+                          {{ block.settings.label }}
+                          {% render 'growing-arrow' %}
+                        </{{ label_tag }}>
+                      {% endunless %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endunless %}
+            </div>
+
+          {% else %}
+            <p class="cart-drawer__added" data-target="cart-section.added">
+              {% render 'icon-misc', icon: 'check' %}
+              {{ 'sections.cart_drawer.item_added' | t }}
+            </p>
+
+            {% form 'cart', cart %}
+              <div class="cart-drawer__items" data-target="cart-section.items">
+                {% for item in cart.items %}
+                  {% render 'line-item', item: item, small: true, section_name: 'cart-drawer' %}
+                {% endfor %}
+              </div>
+            {% endform %}
+          {% endif %}
+        </div>
+
+        {% unless cart.items.size == 0 %}
+          <div class="cart-drawer__footer">
+            <div class="cart-drawer__total grid" data-target="cart-section.subtotal">
+              <div class="col xs6 text-subheading">{{ 'sections.cart_drawer.subtotal' | t }}</div>
+              <div class="col xs6 text-subheading text-right">
+                {{ cart.items_subtotal_price | money_without_trailing_zeros }}
+              </div>
+            </div>
+
+            <div class="cart-drawer__total grid">
+              <div class="col xs12 text-subheading">{{ 'sections.cart_drawer.delivery' | t }}</div>
+            </div>
+
+            <div class="cart-drawer__total grid" data-target="cart-section.total">
+              <div class="col xs6 text-h4 no-margin">{{ 'sections.cart_drawer.total' | t }}</div>
+              <div class="col xs6 text-h4 no-margin text-right">
+                {{ cart.total_price | money_without_trailing_zeros }}
+              </div>
+            </div>
+
+            <div class="grid no-gutter">
+              <a
+                class="col xs6 cart-drawer__cart-button button button--xlarge button--outlined button--no-hover"
+                href="{{ routes.cart_url }}"
+              >
+                {{ 'sections.cart_drawer.cart' | t }}
+              </a>
+
+              <a class="col xs6 button button--xlarge" href="/checkout">
+                {{ 'sections.cart_drawer.checkout' | t }}
+              </a>
+            </div>
+
+            {% if additional_checkout_buttons %}
+              <div class="cart-drawer__accelerated-checkout additional-checkout-buttons--vertical">
+                {{ content_for_additional_checkout_buttons }}
+              </div>
+            {% endif %}
+          </div>
+        {% endunless %}
+      </cart-section>
+    </div>
+  </toggle-element>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "t:sections.cart-drawer.name",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "empty_cart_heading",
+      "label": "t:sections.cart-drawer.settings.empty_cart_heading.label",
+      "default": "Your shopping cart is empty. <em>Explore the below...</em>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "empty_cart_block",
+      "name": "Empty cart block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:presets.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:presets.settings.label.label",
+          "default": "Block label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:presets.settings.url.label",
+          "default": "/collections/all"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

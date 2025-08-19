@@ -1,0 +1,176 @@
+{% liquid
+  assign is_active = true
+  assign filters = collection.filters
+  assign results = collection.products
+
+  assign has_active_filters = false
+
+  assign article_badge = 'sections.product_listing.article_badge' | t
+  assign page_badge = 'sections.product_listing.page_badge' | t
+  assign load_label = 'sections.product_listing.load_more_results' | t
+
+  if search
+    assign filters = search.filters
+    assign results = search.results
+
+    unless search.performed
+      assign is_active = false
+    endunless
+  endif
+
+  for filter in filters
+    case filter.type
+      when 'price_range'
+        if filter.min_value.value or filter.max_value.value
+          assign has_active_filters = true
+        endif
+
+      else
+        if filter.active_values.size >= 1
+          assign has_active_filters = true
+        endif
+    endcase
+  endfor
+
+  if collection
+    assign load_label = 'sections.product_listing.load_more_products' | t
+  endif
+%}
+
+<script src="{{ 'product-listing.js' | asset_url }}" type="module" defer></script>
+
+{{ 'product-listing.css' | asset_url | stylesheet_tag }}
+
+{% if is_active %}
+  <product-listing data-section-id="{{ section.id }}">
+    {% if has_active_filters == false and results.size == 0 %}
+      <div class="container">
+        <h2 class="text-h6">{{ 'sections.product_listing.empty' | t }}</h2>
+      </div>
+
+    {% else %}
+      <div class="product-listing__filters">
+        {% render 'filter-form',
+          action: 'emit',
+          attributes: 'data-target="product-listing.filter-form"',
+          class: 'product-listing__filter-form'
+        %}
+      </div>
+
+      <div class="container">
+        {% if results.size == 0 %}
+          <h2 class="text-center text-h6">{{ 'sections.product_listing.empty' | t }}</h2>
+        {% endif %}
+
+        {% if search %}
+          {% paginate search.results by section.settings.results_per_page %}
+            <ul
+              class="product-listing__grid list-reset"
+              data-target="product-listing.grid"
+              data-grid="option-1"
+            >
+              {% for result in search.results %}
+                {% liquid
+                  assign preload = false
+
+                  if forloop.first
+                    assign preload = true
+                  endif
+                %}
+
+                <li>
+                  {% case result.object_type %}
+                    {% when 'product' %}
+                      {% render 'product-card', product: result, preload: preload %}
+
+                    {% when 'article' %}
+                      {% render 'article-card', article: result, badges: article_badge, preload: preload %}
+
+                    {% when 'page' %}
+                      <a
+                        class="card"
+                        href="{{ result.url }}"
+                      >
+                        <div class="card__thumbnail">
+                          <ul class="card__badges badges list-reset">
+                            <li>{{ page_badge }}</li>
+                          </ul>
+                        </div>
+
+                        <p>{{ result.title }}</p>
+                      </a>
+                  {% endcase %}
+                </li>
+              {% endfor %}
+            </ul>
+
+            <div class="pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endpaginate %}
+
+        {% else %}
+          {% paginate collection.products by section.settings.results_per_page %}
+            {% render 'pagination', paginate: paginate, previous: true %}
+
+            <ul
+              class="product-listing__grid list-reset"
+              data-target="product-listing.grid"
+              data-grid="option-1"
+            >
+              {% for product in collection.products %}
+                {% liquid
+                  assign preload = false
+
+                  if forloop.first
+                    assign preload = true
+                  endif
+                %}
+
+                <li>
+                  {% render 'product-card', product: product, preload: preload %}
+                </li>
+              {% endfor %}
+            </ul>
+
+            {% render 'pagination',
+              paginate: paginate,
+              count_attributes: 'data-target="product-listing.paginate-count"',
+              load_attributes: 'data-target="product-listing.load-next"',
+              load_label: load_label,
+              size: collection.products.size
+            %}
+          {% endpaginate %}
+        {% endif %}
+      </div>
+    {% endif %}
+  </product-listing>
+
+  <scroll-to-top>
+    <button
+      class="button-reset"
+      type="button"
+      data-target="scroll-to-top.button"
+      title="{{ 'accessibility.scroll_to_top' | t }}"
+    >
+      {% render 'icon-direction', icon: 'arrow-up' %}
+    </button>
+  </scroll-to-top>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:sections.product-listing.name",
+  "class": "shopify-section-product-listing",
+  "settings": [
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "t:sections.product-listing.settings.results_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 16
+    }
+  ]
+}
+{% endschema %}

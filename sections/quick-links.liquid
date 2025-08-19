@@ -1,0 +1,47 @@
+<detect-overflow>
+  <div class="quick-links indicate-overflow">
+    <div class="quick-links__container hide-scrollbar" data-target="detect-overflow.scroll-container">
+      {% for block in section.blocks %}
+        {% unless block.settings.label == empty or block.settings.url == null %}
+          <a
+            class="quick-links__link text-subheading {% if request.path == block.settings.url %}is-active{% endif %}"
+            href="{{ block.settings.url }}"
+          >
+            {{ block.settings.label }}
+          </a>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</detect-overflow>
+
+{% schema %}
+{
+  "name": "t:sections.quick-links.name",
+  "blocks": [
+    {
+      "type": "button",
+      "name": "t:sections.quick-links.blocks.button.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:presets.settings.button_label.label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:presets.settings.button_url.label",
+          "default": "/collections/all"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.quick-links.name"
+    }
+  ]
+}
+{% endschema %}

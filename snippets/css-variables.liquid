@@ -1,0 +1,157 @@
+<style>
+  :root {
+
+    /**
+     * Declares scaled spacing variables.
+     * - Based on [Carbon](https://carbondesignsystem.com/elements/spacing/overview/#spacing-scale) with some custom values.
+     */
+    --spacing-2: 0.125rem;
+    --spacing-4: 0.25rem;
+    --spacing-6: 0.375rem; /* custom */
+    --spacing-8: 0.5rem;
+    --spacing-10: 0.625rem; /* custom */
+    --spacing-12: 0.75rem;
+    --spacing-14: 0.875rem; /* custom */
+    --spacing-16: 1rem;
+    --spacing-20: 1.25rem; /* custom */
+    --spacing-24: 1.5rem;
+    --spacing-26: 1.625rem; /* custom */
+    --spacing-28: 1.75rem; /* custom */
+    --spacing-32: 2rem;
+    --spacing-40: 2.5rem;
+    --spacing-42: 2.625rem; /* custom */
+    --spacing-46: 2.875rem; /* custom */
+    --spacing-48: 3rem;
+    --spacing-52: 3.25rem; /* custom */
+    --spacing-56: 3.5rem; /* custom */
+    --spacing-64: 4rem;
+    --spacing-72: 4.625rem; /* custom */
+    --spacing-80: 5rem;
+    --spacing-84: 5.25rem; /* custom */
+    --spacing-94: 5.875rem; /* custom */
+    --spacing-96: 6rem;
+    --spacing-124: 7.75rem; /* custom */
+    --spacing-160: 10rem;
+
+    /**
+     * Typography scale.
+     * - Based on [Carbon](https://carbondesignsystem.com/elements/typography/overview/#scale) with some custom values.
+     */
+    --font-size-11: 0.6875rem; /* custom */
+    --font-size-12: 0.75rem;
+    --font-size-13: 0.8125rem; /* custom */
+    --font-size-14: 0.875rem;
+    --font-size-16: 1rem;
+    --font-size-17: 1.0625rem; /* custom */
+    --font-size-18: 1.125rem;
+    --font-size-20: 1.25rem;
+    --font-size-22: 1.375rem; /* custom */
+    --font-size-24: 1.5rem;
+    --font-size-26: 1.625rem; /* custom */
+    --font-size-28: 1.75rem;
+    --font-size-32: 2rem;
+    --font-size-36: 2.25rem;
+    --font-size-42: 2.625rem;
+    --font-size-48: 3rem;
+    --font-size-50: 3.125rem; /* custom */
+    --font-size-54: 3.375rem;
+    --font-size-60: 3.75rem;
+    --font-size-68: 4.25rem;
+    --font-size-76: 4.75rem;
+    --font-size-84: 5.25rem;
+    --font-size-92: 5.75rem;
+    --font-size-100: 6.25rem; /* custom */
+    --font-size-200: 12.5rem; /* custom */
+
+    /**
+     * Fonts.
+     */
+    --font-body: 'Manrope', sans-serif;
+    --font-heading: 'Libertinus Serif', serif;
+
+    /**
+     * Font weight.
+     */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /**
+     * Color system.
+     */
+    --color-light-pink: {{ settings.color_light_pink | color_to_rgb }};
+    --color-brand-pink: {{ settings.color_brand_pink | color_to_rgb }};
+    --color-medium-pink: {{ settings.color_medium_pink | color_to_rgb }};
+    --color-burgundy: {{ settings.color_burgundy | color_to_rgb }};
+    --color-black: {{ settings.color_black | color_to_rgb }};
+    --color-medium-grey: {{ settings.color_medium_grey | color_to_rgb }};
+    --color-light-grey: {{ settings.color_light_grey | color_to_rgb }};
+    --color-very-light-grey: {{ settings.color_very_light_grey | color_to_rgb }};
+    --color-white: {{ settings.color_white | color_to_rgb }};
+    --color-system-red: {{ settings.color_system_red | color_to_rgb }};
+    --color-system-red-dark: {{ settings.color_system_red_dark | color_to_rgb }};
+    --color-attention-gold: {{ settings.color_attention_gold | color_to_rgb }};
+    --color-sale-red: {{ settings.color_sale_red | color_to_rgb }};
+    --color-success: {{ settings.color_success | color_to_rgb }};
+
+    /**
+     * Other colors.
+     * - Colors which weren't in the original style guide.
+     */
+    --color-button-hover: {{ settings.color_button_hover | color_to_rgb }};
+    --color-secondary-button-hover: {{ settings.color_secondary_button_hover | color_to_rgb }};
+
+    /**
+     * Modified colors.
+     */
+    --color-black-4: {{ settings.color_black | color_modify: 'alpha', 0.04 | color_to_rgb }};
+    --color-black-5: {{ settings.color_black | color_modify: 'alpha', 0.05 | color_to_rgb }};
+    --color-black-10: {{ settings.color_black | color_modify: 'alpha', 0.1 | color_to_rgb }};
+    --color-black-15: {{ settings.color_black | color_modify: 'alpha', 0.15 | color_to_rgb }};
+    --color-black-25: {{ settings.color_black | color_modify: 'alpha', 0.25 | color_to_rgb }};
+    --color-black-60: {{ settings.color_black | color_modify: 'alpha', 0.6 | color_to_rgb }};
+    --color-white-40: {{ settings.color_white | color_modify: 'alpha', 0.4 | color_to_rgb }};
+    --color-white-60: {{ settings.color_white | color_modify: 'alpha', 0.6 | color_to_rgb }};
+    --color-white-70: {{ settings.color_white | color_modify: 'alpha', 0.7 | color_to_rgb }};
+    --color-brand-pink-15: {{ settings.color_brand_pink | color_modify: 'alpha', 0.15 | color_to_rgb }};
+    --color-brand-pink-30: {{ settings.color_brand_pink | color_modify: 'alpha', 0.3 | color_to_rgb }};
+    --color-brand-pink-40: {{ settings.color_brand_pink | color_modify: 'alpha', 0.4 | color_to_rgb }};
+    --color-brand-pink-60: {{ settings.color_brand_pink | color_modify: 'alpha', 0.6 | color_to_rgb }};
+    --color-brand-pink-80: {{ settings.color_brand_pink | color_modify: 'alpha', 0.8 | color_to_rgb }};
+    --color-burgundy-60: {{ settings.color_burgundy | color_modify: 'alpha', 0.6 |  color_to_rgb }};
+    --color-secondary-button-hover-60: {{ settings.color_secondary_button_hover | color_modify: 'alpha', 0.6 | color_to_rgb }};
+    --color-medium-grey-40: {{ settings.color_medium_grey | color_modify: 'alpha', 0.4 | color_to_rgb }};
+    --color-medium-grey-80: {{ settings.color_medium_grey | color_modify: 'alpha', 0.8 | color_to_rgb }};
+    --color-very-light-grey-50: {{ settings.color_very_light_grey | color_modify: 'alpha', 0.5 | color_to_rgb }};
+
+
+    /**
+     * Layout.
+     */
+    --container-gutter: var(--spacing-16);
+    --container-gutter-desktop: var(--spacing-32);
+    --max-content-width: 100%;
+    --grid-row-gap: var(--spacing-32);
+    --grid-row-gap-desktop: var(--spacing-48);
+    --grid-column-gap: var(--spacing-16);
+    --grid-column-gap-desktop: var(--spacing-32);
+    --grid-template-columns: repeat(12, minmax(0, 1fr));
+
+    /**
+     * Header defaults.
+     * - Updated by the `site-header` component on load and resize.
+     */
+    --header-main-height: 52px;
+    --header-announcement-height: 0px;
+
+    @media (min-width: 1024px) {
+      --header-main-height: 70px;
+    }
+
+    /**
+     * Custom.
+     */
+    --accelerated-checkout-button-margin-top: 8px;
+  }
+</style>

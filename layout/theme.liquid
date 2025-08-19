@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+{% capture canonical_url %}
+  {% render 'canonical-tag' %}
+{% endcapture %}
+
+                
+{% include 'canonicals_app' %}
+                
+<link rel="canonical" href="{{ canonical_url }}">
+
+
+    {% liquid
+      render 'theme-head'
+      render 'css-variables'
+      render 'css-reset'
+      render 'theme-styles'
+    %}
+
+    <script type="importmap">
+      {
+        "imports": {
+          "~/helpers": "{{ 'helpers.js' | asset_url }}",
+          "~/event-bus": "{{ 'event-bus.js' | asset_url }}",
+          "~/theme": "{{ 'theme.js' | asset_url }}"
+        }
+      }
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <a class="visually-hidden" href="#MainContent">{{ 'accessibility.skip_to_text' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main
+      id="MainContent"
+      class="content-for-layout"
+      role="main"
+      tabindex="-1"
+    >
+      {{ content_for_layout }}
+    </main>
+
+    <div>
+      {% sections 'footer-group' %}
+    </div>
+
+    <window-overlay></window-overlay>
+
+    <quick-buy-modal>
+      <toggle-element data-namespace="quick-buy" class="quick-buy modal modal--up hide-scrollbar">
+        <div class="quick-buy__header">
+          <p class="quick-buy__title text-subheading">{{ 'quick_buy.title' | t }}</p>
+
+          <button
+            class="quick-buy__close button-reset"
+            type="button"
+            title="{{ 'quick_buy.close' | t }}"
+            data-toggle="quick-buy"
+          >
+            {% render 'icon-misc', icon: 'close' %}
+          </button>
+        </div>
+
+        <div class="quick-buy__content" data-target="quick-buy-modal.content"></div>
+      </toggle-element>
+    </quick-buy-modal>
+
+    <toggle-element class="drawer" data-namespace="localization">
+      <div class="drawer__container">
+        <div class="drawer__header">
+          <h4 class="text-subheading no-margin">{{ 'localization_form.heading' | t }}</h4>
+
+          <button
+            class="button-reset drawer__close"
+            title="{{ 'localization_form.close' | t }}"
+            data-toggle="localization"
+          >
+            {% render 'icon-misc', icon: 'close' %}
+          </button>
+        </div>
+
+        <div class="drawer__body padding">
+          {% render 'localization-form' %}
+        </div>
+      </div>
+    </toggle-element>
+
+    {% render 'theme-strings' %}
+    {% render 'theme-scripts' %}
+  </body>
+</html>

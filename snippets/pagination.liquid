@@ -1,0 +1,42 @@
+{% comment %}
+  Renders a pagination widget.
+
+  Accepts:
+  - paginate: {Object} The pagination instance.
+  - size: {Number} The total number of results (i.e. `collection.products.size`).
+  - load_label: {String} Optional label for the load more button.
+  - count_attributes: {String} Optional attributes for the count container.
+  - load_attributes: {String} Optional attributes for the load button.
+  - previous: {Boolean} Renders the previous page button only.
+
+  Usage:
+  {% render 'pagination', paginate: paginate, size: collection.products.size %}
+{% endcomment %}
+
+{% assign default_load_label = 'pagination.load' | t %}
+
+{% if previous %}
+  {% if paginate.previous %}
+    <div class="pagination">
+      <a class="button-reset text-button" href="{{ paginate.previous.url }}">
+        {{- 'pagination.go_to_previous_page' | t -}}
+      </a>
+    </div>
+  {% endif %}
+{% else %}
+  <div class="pagination">
+    <p class="text-subheading" {{ count_attributes }}>
+      {{ paginate.current_offset | plus: size }}/{{ paginate.items }}
+    </p>
+
+    {% if paginate.next %}
+      <a
+        class="pagination__load button-reset text-button"
+        href="{{ paginate.next.url }}"
+        {{ load_attributes }}
+      >
+        {{ load_label | default: default_load_label }}
+      </a>
+    {% endif %}
+  </div>
+{% endif %}

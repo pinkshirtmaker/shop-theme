@@ -1,0 +1,134 @@
+{% style %}
+  #recover:not(:target) {
+    display: none;
+  }
+
+  #recover:target ~ #customer_login {
+    display: none;
+  }
+
+  #recover,
+  #customer_login {
+    /**
+     * Accounts for the header height plus the margin.
+     */
+    scroll-margin-top: calc(73px + var(--spacing-40));
+  }
+{% endstyle %}
+
+<section class="main-login">
+  <div class="container">
+    <div class="grid no-gutter">
+      <div class="col xs12 m4 offset-m4">
+        <div id="recover" class="grid no-gutter margin">
+          <div class="col xs12">
+            {% form 'recover_customer_password' %}
+              <h2 class="text-h4">{{ 'sections.main_login.recover.title' | t }}</h2>
+
+              {% unless form.errors %}
+                <p
+                  class="
+                    text-body-small
+                    margin
+                    {% if form.posted_successfully? %}
+                      success
+                    {% endif %}
+                  "
+                >
+                  {% if form.posted_successfully? %}
+                    {{ 'sections.main_login.recover.success' | t }}
+
+                  {% else %}
+                    {{ 'sections.main_login.recover.subtitle' | t }}
+                  {% endif %}
+                </p>
+              {% endunless %}
+
+              {{ form.errors | default_errors }}
+
+              <div class="form-group">
+                <div class="form-group__field">
+                  <label for="{{ section.id | append: '-recover-email' }}">
+                    {{ 'sections.main_login.recover.email' | t }}
+                  </label>
+
+                  <input
+                    id="{{ section.id | append: '-recover-email' }}"
+                    name="email"
+                    type="email"
+                  >
+                </div>
+
+                <div class="form-group__footer">
+                  <button class="button button-reset">
+                    {{ 'sections.main_login.recover.submit' | t }}
+                  </button>
+                </div>
+
+                <a class="form-group__link text-body-small" href="#customer_login">
+                  {{ 'sections.main_login.recover.cancel' | t }}
+                </a>
+              </div>
+            {% endform %}
+          </div>
+        </div>
+
+        <div id="customer_login" class="grid no-gutter margin">
+          <div class="col xs12">
+            {% form 'customer_login', id: null %}
+              <h1 class="text-h4">{{ 'sections.main_login.login.title' | t }}</h1>
+
+              {{ form.errors | default_errors }}
+
+              <div class="form-group">
+                <div class="form-group__field styled-field">
+                  <label for="{{ section.id | append: '-email' }}">
+                    {{ 'sections.main_login.login.email' | t }}
+                  </label>
+
+                  <input
+                    id="{{ section.id | append: '-email' }}"
+                    name="customer[email]"
+                    type="email"
+                    placeholder="{{ 'sections.main_login.login.email' | t }}"
+                  >
+                </div>
+
+                {% if form.password_needed %}
+                  <div class="form-group__field">
+                    <div class="styled-field">
+                      <label for="{{ section.id | append: '-password' }}">
+                        {{ 'sections.main_login.login.password' | t }}
+                      </label>
+
+                      <input
+                        id="{{ section.id | append: '-password' }}"
+                        name="customer[password]"
+                        type="password"
+                        placeholder="{{ 'sections.main_login.login.password' | t }}"
+                      >
+                    </div>
+
+                    <a class="form-group__link text-body-small" href="#recover">
+                      {{ 'sections.main_login.login.forgotten_password' | t }}
+                    </a>
+                  </div>
+                {% endif %}
+
+                <div class="form-group__footer">
+                  <button class="button button-reset">
+                    {{ 'sections.main_login.login.submit' | t }}
+                  </button>
+                </div>
+
+                <a class="form-group__link text-link" href="{{ routes.account_register_url }}">
+                  {{ 'sections.main_login.register_link' | t }}
+                </a>
+              </div>
+            {% endform %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,14 @@
+{% comment %}
+  Renders a list of payment logos.
+
+  Usage:
+  {% render 'payment-logos' %}
+{% endcomment %}
+
+{% unless shop.enabled_payment_types.size == 0 %}
+  <ul class="payment-logos icon-grid list-reset">
+    {% for payment_type in shop.enabled_payment_types %}
+      <li>{{ payment_type | payment_type_svg_tag }}</li>
+    {% endfor %}
+  </ul>
+{% endunless %}

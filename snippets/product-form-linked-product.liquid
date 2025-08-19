@@ -1,0 +1,72 @@
+{% comment %}
+  Used to display a linked product in the product form.
+
+  Accepts:
+  - selected_variant: {Object} The default variant.
+  - product: {Object} The current product.
+  - linked_product: {Object} The linked product object.
+  - label: {String} The product label (defaults to the product title).
+  - color: {Boolean} A colour value, turning this option into a swatch.
+  - image: {Object} An image object to use instead of `color`.
+
+  Usage:
+  {% render 'product-form-linked-product',
+    linked_product: product.metafields.custom.linked_products_product_fit.value.first,
+    product: product,
+    selected_variant: product.selected_or_first_available_variant
+  %}
+{% endcomment %}
+
+{% liquid
+  assign matching_variant = null
+  assign has_swatch = false
+
+  for linked_product_variant in linked_product.variants
+    if linked_product_variant.options == selected_variant.options
+      assign matching_variant = linked_product_variant
+    endif
+  endfor
+
+  if color or image
+    assign has_swatch = true
+  endif
+%}
+
+{% capture linked_product_data %}
+  {
+    "variants": [
+      {% for linked_product_variant in linked_product.variants %}
+        {
+          "url": {{ linked_product_variant.url | json }},
+          "options": {{ linked_product_variant.options | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+{% endcapture %}
+
+<a
+  class="{% if has_swatch %}swatch{% else %}product-form__value{% endif %} {% if linked_product == product %}is-active{% endif %}"
+  href="{{ linked_product.url }}?variant={{ matching_variant.id }}"
+  data-product-data="{{ linked_product_data | escape }}"
+  data-target="product-form.linked-product"
+  {% if has_swatch %}
+    style="
+      {% if image %}
+        --image: url('{{ image | image_url: width: 64, height: 64 }}');
+      {% endif %}
+
+      {% if color %}
+        --color: {{ color }};
+      {% endif %}
+    "
+  {% endif %}
+>
+  <span
+    {% if has_swatch %}
+      class="visually-hidden"
+    {% endif %}
+  >
+    {{- label | default: product.title -}}
+  </span>
+</a>

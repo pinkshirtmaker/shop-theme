@@ -1,0 +1,71 @@
+{% liquid
+  assign slides_slot_count = section.blocks.size
+
+  unless section.settings.blog == blank
+    assign slides_slot_count = section.settings.blog.articles.size
+  endunless
+%}
+
+{% capture slides_slot %}
+  {% if section.settings.blog != blank %}
+    {% for article in section.settings.blog.articles %}
+      <swiper-slide>
+        {% render 'article-card', article: article %}
+      </swiper-slide>
+    {% endfor %}
+  {% else %}
+    {% for block in section.blocks %}
+      <swiper-slide>
+        {% unless block.settings.article == blank %}
+          {% render 'article-card', article: block.settings.article %}
+        {% endunless %}
+      </swiper-slide>
+    {% endfor %}
+  {% endif %}
+{% endcapture %}
+
+{% render 'product-slider',
+  heading: section.settings.heading,
+  slides_slot: slides_slot,
+  slides_slot_count: slides_slot_count,
+  slides_per_view_desktop: 3.5
+%}
+
+{% schema %}
+{
+  "name": "t:sections.featured-articles.name",
+  "class": "section-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Heading"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "t:presets.settings.blog.label",
+      "info": "t:presets.settings.blog.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "t:presets.blocks.article.name",
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "t:presets.settings.article.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured-articles.name"
+    }
+  ]
+}
+{% endschema %}

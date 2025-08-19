@@ -1,0 +1,116 @@
+{% comment %}
+  Renders the Article feature section content.
+
+  Accepts:
+  - text_color: {String} Text color override.
+  - text_color_invert: {String} Used with `text_color` for buttons.
+  - background_color: {String} Background color override.
+  - heading: {String} Heading text.
+  - all_articles_label: {String} Used for the "all articles" link.
+  - all_articles_url: {String} Displays a link in the top right.
+  - article: {Object} The main article to display.
+  - article_button_label: {String} The "read more" button.
+  - image: {Object} Banner image, defaults to the article's featured image.
+  - article_button_style: {String} Optional button style (accepts `text`).
+  - heading_style: {String} Optional heading style (accepts `large`).
+  - heading_tag: {String} Optional tag for the heading, defaults to `p`.
+
+  Usage:
+  {% render 'article-feature' %}
+{% endcomment %}
+
+{{ 'article-feature.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign has_all_articles_link = false
+
+  unless heading_tag
+    assign heading_tag = 'p'
+  endunless
+
+  unless article_button_label
+    assign article_button_label = 'sections.article_feature.article_button' | t
+  endunless
+
+  unless article == blank
+    unless blog
+      assign blog_handle = article.handle | split: '/' | first
+      assign blog = blogs[blog_handle]
+    endunless
+
+    unless image
+      if article.image
+        assign image = article.image
+      endif
+    endunless
+
+    if blog
+      unless all_articles_url
+        assign all_articles_url = blog.url
+      endunless
+    endif
+  endunless
+
+  unless all_articles_url == null or all_articles_label == null or all_articles_label == empty
+    assign has_all_articles_link = true
+  endunless
+%}
+
+<div
+  class="article-feature"
+  style="
+    {% unless text_color == blank %}
+      --color: {{ text_color }};
+
+      {% unless text_color_invert == blank %}
+        --color-invert: {{ text_color_invert }};
+      {% endunless %}
+    {% endunless %}
+
+    {% unless background_color == blank %}--background-color: {{ background_color }};{% endunless %}
+  "
+>
+  <div class="article-feature__container">
+    {% unless heading == empty and has_all_articles_link == false %}
+      <div class="article-feature__header">
+        {% unless heading == empty %}
+          <{{ heading_tag }} class="{% if heading_style == 'large' %}text-h1{% else %}text-h2{% endif %} no-margin">
+            {{- heading -}}
+          </{{ heading_tag }}>
+        {% endunless %}
+
+        {% if has_all_articles_link %}
+          <a class="text-button" href="{{ all_articles_url }}">
+            {{- all_articles_label }}
+            {% render 'growing-arrow' %}
+          </a>
+        {% endif %}
+      </div>
+    {% endunless %}
+
+    {% unless article == blank %}
+      <div class="article-feature__article">
+        <p class="text-subheading">{{ article.published_at | date: '%d.%m.%Y' }}</p>
+        <p class="text-h4 no-margin">{{ article.title }}</p>
+
+        {% unless article.excerpt_or_content == blank %}
+          <p class="article-feature__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 144 }}</p>
+        {% endunless %}
+
+        {% unless article_button_label == empty %}
+          <a
+            class="article-feature__button {% if article_button_style == 'text' %}text-button{% else %}button button--outlined button--small{% endif %}"
+            href="{{ article.url }}"
+          >
+            {{- article_button_label -}}
+            {% if article_button_style == 'text' %}{% render 'icon-direction', icon: 'arrow-right' %}{% endif %}
+          </a>
+        {% endunless %}
+      </div>
+    {% endunless %}
+  </div>
+
+  {% if image %}
+    {{ image | image_url: width: 1440, height: 1152 | image_tag: class: 'article-feature__image' }}
+  {% endif %}
+</div>

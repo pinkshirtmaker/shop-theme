@@ -1,0 +1,118 @@
+/**
+ * Line item.
+ */
+.line-item {
+  --image-width: 106px;
+  display: grid;
+  gap: var(--spacing-16);
+  grid-template-columns: var(--image-width) minmax(auto, 1fr);
+}
+
+.line-item__image {
+  align-self: start;
+  aspect-ratio: 140 / 168;
+}
+
+.line-item__image img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.line-item__image.line-item__image--empty {
+  background-color: var(--color-very-light-grey);
+}
+
+.line-item__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.line-item__header {
+  align-items: baseline;
+  display: flex;
+  gap: var(--spacing-24);
+}
+
+.line-item__header .product-price {
+  font-size: var(--font-size-13);
+  margin-inline-start: auto;
+  letter-spacing: 0.2em;
+  text-align: right;
+}
+
+.line-item__options {
+  display: flex;
+  gap: var(--spacing-24);
+}
+
+.line-item__actions {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-40);
+}
+
+.line-item .quantity-selector {
+  max-width: 117px;
+  padding: var(--spacing-4) var(--spacing-16);
+}
+
+.line-item__remove {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-4);
+  margin-inline-start: auto;
+}
+
+.line-item__remove .icon {
+  --size: 10px;
+}
+
+.line-item--small .line-item__remove {
+  background-color: var(--color-very-light-grey);
+  border-radius: 50%;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.line-item--small .line-item__remove .icon {
+  --size: 12px;
+}
+
+.line-item--small .line-item__remove-label {
+  display: none;
+}
+
+.line-item--small .quantity-selector {
+  padding-block: var(--spacing-8);
+}
+
+.line-item--small .line-item__header {
+  margin-block-end: 0;
+}
+
+.line-item--small {
+  --image-width: 100px;
+}
+
+.line-item--small .quantity-selector {
+  max-width: 167px;
+  padding-inline: var(--spacing-28);
+}
+
+@media (min-width: 1024px) {
+  .line-item:not(.line-item--small) {
+    --image-width: 140px;
+  }
+
+  .line-item__header {
+    margin-block-end: var(--spacing-40);
+  }
+
+  .line-item .quantity-selector {
+    max-width: 167px;
+    padding-inline: var(--spacing-28);
+  }
+}

@@ -1,0 +1,95 @@
+<section class="main-account container">
+  <h1 class="text-h3">{{ 'sections.main_account.title' | t }}</h1>
+
+  <a class="text-link" href="{{ routes.account_logout_url }}">
+    {{ 'sections.main_account.logout' | t }}
+  </a>
+
+  <div class="main-account__body grid">
+    <div class="col xs12 l8">
+      <h2 class="text-h4">{{ 'sections.main_account.orders' | t }}</h2>
+
+      {% if customer.orders.size > 0 %}
+        {% paginate customer.orders by section.settings.orders_per_page %}
+          <table>
+            <thead>
+              <tr>
+                <th>{{ 'sections.main_account.order.number' | t }}</th>
+                <th>{{ 'sections.main_account.order.date' | t }}</th>
+                <th>{{ 'sections.main_account.order.payment_status' | t }}</th>
+                <th>{{ 'sections.main_account.order.fulfillment_status' | t }}</th>
+                <th>{{ 'sections.main_account.order.total' | t }}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for order in customer.orders %}
+                <tr>
+                  <td>
+                    <span class="label" data-label="{{ 'sections.main_account.order.number' | t }}"></span>
+                    <span class="value">{{ order.name | link_to: order.customer_url }}</span>
+                  </td>
+
+                  <td>
+                    <span class="label" data-label="{{ 'sections.main_account.order.date' | t }}"></span>
+                    <span class="value">{{ order.created_at | time_tag: format: 'date' }}</span>
+                  </td>
+
+                  <td>
+                    <span class="label" data-label="{{ 'sections.main_account.order.payment_status' | t }}"></span>
+                    <span class="value">{{ order.financial_status_label }}</span>
+                  </td>
+
+                  <td>
+                    <span class="label" data-label="{{ 'sections.main_account.order.fulfillment_status' | t }}"></span>
+                    <span class="value">{{ order.fulfillment_status_label }}</span>
+                  </td>
+
+                  <td>
+                    <span class="label" data-label="{{ 'sections.main_account.order.total' | t }}"></span>
+                    <span class="value">{{ order.total_price | money_without_trailing_zeros }}</span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div class="pagination">
+            {{ paginate | default_pagination }}
+          </div>
+        {% endpaginate %}
+
+      {% else %}
+        <p>{{ 'sections.main_account.no_orders' | t }}</p>
+      {% endif %}
+    </div>
+
+    <div class="col xs12 l4">
+      <h2 class="text-h5">{{ 'sections.main_account.addresses' | t }}</h2>
+
+      <p class="label">{{ 'sections.main_account.default_address' | t }}</p>
+
+      <address>
+        {{ customer.default_address | format_address }}
+      </address>
+
+      {{ 'sections.main_account.addresses_link' | t | link_to: routes.account_addresses_url, class: 'text-link' }}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-account.name",
+  "settings": [
+    {
+      "type": "range",
+      "id": "orders_per_page",
+      "label": "t:sections.main-account.settings.orders_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

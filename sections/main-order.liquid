@@ -1,0 +1,196 @@
+{% liquid
+  assign order_date = order.created_at | time_tag: format: 'date_at_time'
+  assign cancelled_at = order.cancelled_at | time_tag: format: 'date_at_time'
+%}
+
+<section class="main-account container">
+  {{ 'sections.main_order.return_link' | t | link_to: routes.account_url, class: 'text-link main-account__return' }}
+
+  <h1 class="text-h4">{{ 'sections.main_order.title' | t: name: order.name }}</h1>
+  <p class="text-body-small">{{ 'sections.main_order.date_html' | t: date: order_date }}</p>
+
+  {% if order.cancelled %}
+    <p>{{ 'sections.main_order.cancelled_html' | t: date: cancelled_at }}</p>
+    <p>{{ 'sections.main_order.cancelled_reason' | t: reason: order.cancel_reason_label }}</p>
+  {% endif %}
+
+  <div class="main-account__body grid">
+    <div class="col xs12 l8">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'sections.main_order.line_item.product' | t }}</th>
+            <th>{{ 'sections.main_order.line_item.sku' | t }}</th>
+            <th>{{ 'sections.main_order.line_item.price' | t }}</th>
+            <th>{{ 'sections.main_order.line_item.quantity' | t }}</th>
+            <th>{{ 'sections.main_order.line_item.total' | t }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for line_item in order.line_items %}
+            <tr>
+              <td>
+                <span class="label" data-label="{{ 'sections.main_order.line_item.product' | t }}"></span>
+                <span class="value">{{ line_item.title | link_to: line_item.url }}</span>
+              </td>
+
+              {% unless line_item.sku == blank %}
+                <td>
+                  <span class="label" data-label="{{ 'sections.main_order.line_item.sku' | t }}"></span>
+                  <span class="value">{{ line_item.sku }}</span>
+                </td>
+              {% endunless %}
+
+              <td>
+                {% liquid
+                  assign compare_at = false
+
+                  if line_item.original_price != line_item.final_price
+                    assign compare_at = line_item.original_price
+                  endif
+                %}
+
+                <span class="label" data-label="{{ 'sections.main_order.line_item.price' | t }}"></span>
+
+                <span class="value">
+                  {% render 'product-price',
+                    variant: line_item.variant,
+                    price: line_item.final_price,
+                    compare_at: compare_at
+                  %}
+
+                  {% if line_item.selling_plan_allocation %}
+                    <p>{{ line_item.selling_plan_allocation.selling_plan.name }}</p>
+                  {% endif %}
+                </span>
+              </td>
+
+              <td>
+                <span class="label" data-label="{{ 'sections.main_order.line_item.quantity' | t }}"></span>
+                <span class="value">{{ line_item.quantity }}</span>
+              </td>
+
+              <td>
+                <span class="label" data-label="{{ 'sections.main_order.line_item.total' | t }}"></span>
+
+                <span class="value">
+                  {% if line_item.original_line_price != line_item.final_line_price %}
+                    <s>{{ line_item.original_line_price | money_without_trailing_zeros }}</s>
+                    {{ line_item.final_line_price | money_without_trailing_zeros }}
+
+                  {% else %}
+                    {{ line_item.original_line_price | money_without_trailing_zeros }}
+                  {% endif %}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="4" class="label">{{ 'sections.main_order.subtotal' | t }}</td>
+
+            <td>
+              <span class="label label--large" data-label="{{ 'sections.main_order.subtotal' | t }}"></span>
+              <span class="value">{{ order.line_items_subtotal_price | money_without_trailing_zeros }}</span>
+            </td>
+          </tr>
+
+          {% if order.cart_level_discount_applications != blank %}
+            <tr>
+              {% for discount_application in order.cart_level_discount_applications %}
+                <td colspan="4" class="label">{{ discount_application.title }}</td>
+
+                <td>
+                  <span class="label label--large" data-label="{{ discount_application.title }}"></span>
+                  <span class="value"
+                    >-{{ discount_application.total_allocated_amount | money_without_trailing_zeros -}}
+                  </span>
+                </td>
+              {% endfor %}
+            </tr>
+          {% endif %}
+
+          {% for shipping_method in order.shipping_methods %}
+            {% capture title %}
+              {{ 'sections.main_order.shipping' | t }} ({{ shipping_method.title }})
+            {% endcapture %}
+
+            <tr>
+              <td colspan="4" class="label">{{ title | strip }}</td>
+
+              <td>
+                <span class="label label--large" data-label="{{ title | strip }}"></span>
+                <span class="value">{{ shipping_method.price | money_without_trailing_zeros }}</span>
+              </td>
+            </tr>
+          {% endfor %}
+
+          {% for tax_line in order.tax_lines %}
+            {% capture title %}
+              {{ 'sections.main_order.tax' | t }}
+                ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)
+            {% endcapture %}
+
+            <tr>
+              <td colspan="4" class="label">{{ title | strip }}</td>
+
+              <td>
+                <span class="label label--large" data-label="{{ title | strip }}"></span>
+                <span class="value">{{ tax_line.price | money_without_trailing_zeros }}</span>
+              </td>
+            </tr>
+          {% endfor %}
+
+          {% if order.total_duties %}
+            <tr>
+              <td colspan="4" class="label">{{ 'sections.main_order.total_duties' | t }}</td>
+
+              <td>
+                <span class="label label--large" data-label="{{ 'sections.main_order.total_duties' | t }}"></span>
+                <span class="value">{{ order.total_duties | money_without_trailing_zeros }}</span>
+              </td>
+            </tr>
+          {% endif %}
+
+          <tr>
+            <td colspan="4" class="label">{{ 'sections.main_order.total' | t }}</td>
+
+            <td>
+              <span class="label label--large" data-label="{{ 'sections.main_order.total' | t }}"></span>
+              <span class="value">{{ order.total_price | money_without_trailing_zeros }}</span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="col xs12 l4">
+      <div class="grid">
+        <div class="col xs12">
+          <h2 class="text-h5">{{ 'sections.main_order.billing_address' | t }}</h2>
+
+          <p>
+            {{ 'sections.main_order.payment_status' | t }}:
+            {{ order.financial_status_label }}
+          </p>
+
+          {{ order.billing_address | format_address }}
+        </div>
+
+        <div class="col xs12">
+          <h2 class="text-h5">{{ 'sections.main_order.shipping_address' | t }}</h2>
+
+          <p>
+            {{ 'sections.main_order.fulfillment_status' | t }}:
+            {{ order.fulfillment_status_label }}
+          </p>
+
+          {{ order.shipping_address | format_address }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

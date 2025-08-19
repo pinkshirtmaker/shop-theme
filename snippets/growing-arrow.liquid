@@ -1,0 +1,16 @@
+{% comment %}
+  Renders a growing arrow icon.
+
+  Accepts:
+  - absolute: {Boolean} Enables the absolute position on hover.
+
+  Usage:
+  {% render 'growing-arrow' %}
+{% endcomment %}
+
+<span class="growing-arrow {% if absolute %}growing-arrow--absolute{% endif %} icon">
+  <span class="growing-arrow__arrow">
+    <span class="growing-arrow__line"></span>
+    <span class="growing-arrow__head"></span>
+  </span>
+</span>

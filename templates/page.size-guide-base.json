@@ -1,0 +1,147 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "header": {
+      "type": "size-guide-header",
+      "settings": {
+        "heading": "Fit & Size Guide",
+        "subcontent": "<p>We've created a guide that will help you find the right fit and size of our product, making it easier for you to make the perfect choice.</p>",
+        "menu": "size-guide-menu",
+        "fit_nav_heading": "Select fit:",
+        "fit_description": "<p>Formal Shirt - <em>Slim Fit</em></p><p>Ideal for average builds and those who want a slightly tailored, yet flexible fit.</p><ol><li>Slightly tapered at the waist</li><li>Slimmer sleeves for a neat silhouette</li><li>Comfortably fitted around the shoulders.</li></ol>",
+        "fit_button_label": "Shop slim fit shirts",
+        "fit_button_url": "shopify://collections/all"
+      }
+    },
+    "image_block_slider": {
+      "type": "image-block-slider",
+      "blocks": {
+        "block_HNreA6": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/e8e98cf719e1e1473e8218d7fd403712.jpg",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        },
+        "block_MiYT3i": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/9ec3f1dac17ca4b895099b412dcbc803.jpg",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        },
+        "block_UAxdQ8": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/test_smartcasual_V2.webp",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        },
+        "block_H3L8HA": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/test_formalshirts_V2.webp",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        },
+        "block_bwWbKw": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/category_essential_shirts_V2.webp",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        },
+        "block_7Kh8iU": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/f84c66596166d322541c939e169c23d7.jpg",
+            "image_url": "shopify://collections",
+            "content": "Text content"
+          }
+        }
+      },
+      "block_order": ["block_HNreA6", "block_MiYT3i", "block_UAxdQ8", "block_H3L8HA", "block_bwWbKw", "block_7Kh8iU"],
+      "settings": {
+        "heading": "Heading"
+      }
+    },
+    "main": {
+      "type": "size-guide-table",
+      "blocks": {
+        "block_1": {
+          "type": "size",
+          "settings": {
+            "heading": "14.5",
+            "measurements": "Chest across underarm - 46.5\nWaist at 5th button - 46.5\nHem width seam to seam - 46.5\nSleeve length (regular) - 46.5\nBack neck seam to hem - 46.5",
+            "front_image": "shopify://shop_images/front.webp",
+            "back_image": "shopify://shop_images/back.webp"
+          }
+        },
+        "block_2": {
+          "type": "size",
+          "settings": {
+            "heading": "15.0",
+            "measurements": "Chest across underarm - 46.5\nWaist at 5th button - 46.5\nHem width seam to seam - 46.5\nSleeve length (regular) - 46.5\nBack neck seam to hem - 46.5",
+            "front_image": "shopify://shop_images/front-2.webp",
+            "back_image": "shopify://shop_images/back-2.webp"
+          }
+        },
+        "block_3": {
+          "type": "size",
+          "settings": {
+            "heading": "15.5",
+            "measurements": "Chest across underarm - 46.5\nWaist at 5th button - 46.5\nHem width seam to seam - 46.5\nSleeve length (regular) - 46.5\nBack neck seam to hem - 46.5",
+            "front_image": "shopify://shop_images/front-3.webp",
+            "back_image": "shopify://shop_images/back-3.webp"
+          }
+        },
+        "block_4": {
+          "type": "size",
+          "settings": {
+            "heading": "16.0",
+            "measurements": "Chest across underarm - 46.5\nWaist at 5th button - 46.5\nHem width seam to seam - 46.5\nSleeve length (regular) - 46.5\nBack neck seam to hem - 46.5",
+            "front_image": "shopify://shop_images/front-4.webp",
+            "back_image": "shopify://shop_images/back-4.webp"
+          }
+        },
+        "block_5": {
+          "type": "size",
+          "settings": {
+            "heading": "16.5",
+            "measurements": "Chest across underarm - 46.5\nWaist at 5th button - 46.5\nHem width seam to seam - 46.5\nSleeve length (regular) - 46.5\nBack neck seam to hem - 46.5",
+            "front_image": "shopify://shop_images/front-5.webp",
+            "back_image": "shopify://shop_images/back-5.webp"
+          }
+        }
+      },
+      "block_order": ["block_1", "block_2", "block_3", "block_4", "block_5"],
+      "settings": {
+        "heading": "Find your size\n\nStart by selecting your usual collar size. Then check if other measurements fit you.",
+        "heading_tag": "h3",
+        "header_column_name": "Size",
+        "button_label": "Shop all",
+        "button_url": "shopify://collections/all",
+        "link_block_1_heading": "Looking for a <em>tighter fit?</em>",
+        "link_block_1_button_label": "Check out our athletic shirts",
+        "link_block_1_button_url": "shopify://collections/all",
+        "link_block_2_heading": "Looking for a <em>looser fit?</em>",
+        "link_block_2_button_label": "Check out our classic shirts",
+        "link_block_2_button_url": "shopify://collections/all"
+      }
+    }
+  },
+  "order": ["header", "image_block_slider", "main"]
+}

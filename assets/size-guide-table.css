@@ -1,0 +1,286 @@
+size-guide-modal .size-guide-table-section {
+  margin-block-start: var(--spacing-32);
+}
+
+size-guide-modal .size-guide-table-section:not(:first-child) {
+  border-block-start: 1px solid var(--color-black-15);
+  padding-block-start: var(--spacing-24);
+}
+
+.size-guide-table__table {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.size-guide-table__table table {
+  border: 1px solid var(--color-light-grey);
+  border-collapse: collapse;
+  display: block;
+  width: 100%;
+}
+
+.size-guide-table__table :is(th, td):first-of-type {
+  left: 0;
+  min-width: 168px;
+  position: sticky;
+  width: 100%;
+}
+
+.size-guide-table__table :is(th, td) {
+  background-color: var(--color-white);
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-16) var(--spacing-12);
+}
+
+.size-guide-table__table :is(th, td):not(:first-of-type) {
+  padding-inline: var(--spacing-20);
+  text-align: center;
+}
+
+.size-guide-table__table td:not(.is-active, :first-of-type) {
+  color: var(--color-medium-grey);
+}
+
+.size-guide-table__table :is(th, td) {
+  border-block-end: 1px solid var(--color-light-grey);
+  border-inline: 1px solid var(--color-light-grey);
+}
+
+.size-guide-table__table tbody tr:last-of-type td {
+  border-block-end: 0;
+}
+
+.size-guide-table__table :is(th, td):first-child {
+  border-inline-start: 0;
+}
+
+.size-guide-table__table :is(th, td):last-child {
+  border-inline-end: 0;
+}
+
+.size-guide-table__table th {
+  background-color: var(--color-very-light-grey);
+}
+
+.size-guide-table__table td.is-active {
+  background-color: var(--color-very-light-grey);
+}
+
+.size-guide-table__table th.is-active {
+  background-color: var(--color-light-grey);
+}
+
+@media (hover: hover) {
+  .size-guide-table__table tr:hover td {
+    background-color: var(--color-very-light-grey);
+    color: var(--color-black);
+  }
+
+  .size-guide-table__table tr:hover td.is-active {
+    background-color: var(--color-light-grey);
+  }
+}
+
+.size-guide-table__nav {
+  justify-self: end;
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-16);
+  margin-block-end: var(--spacing-16);
+}
+
+.size-guide-table__nav-button {
+  display: flex;
+}
+
+.size-guide-table__nav-button .icon {
+  --size: 24px;
+}
+
+.size-guide-table__block-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  margin-block-end: var(--spacing-32);
+}
+
+.size-guide-table__block-button {
+  align-items: center;
+  border: 1px solid var(--color-light-grey);
+  border-radius: 100px;
+  color: var(--color-black-60);
+  display: flex;
+  justify-content: center;
+  font-size: var(--font-size-17);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  min-height: 40px;
+  padding: var(--spacing-6) var(--spacing-12);
+  text-align: center;
+}
+
+.size-guide-table__block-button.is-active {
+  background-color: var(--color-very-light-grey);
+  color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.size-guide-table__units {
+  display: flex;
+  margin-block-end: var(--spacing-24);
+  width: 100%;
+}
+
+.size-guide-table__unit {
+  border-block-end: 1px solid var(--color-black-15);
+  color: var(--color-medium-grey);
+  flex: 1;
+  padding: var(--spacing-20);
+  text-align: center;
+}
+
+.size-guide-table__unit.is-active {
+  border-block-end-color: var(--color-black);
+  color: var(--color-black);
+}
+
+.size-guide-table__images {
+  aspect-ratio: 568 / 710;
+  margin-block-end: var(--spacing-32);
+  overflow: hidden;
+  position: relative;
+}
+
+.size-guide-table__images:not(:has(.size-guide-table__image:not(:empty))) {
+  display: none;
+}
+
+.size-guide-table__images .size-guide-table__images-nav {
+  left: 0;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+
+.size-guide-table__images-nav.is-hidden {
+  display: none;
+}
+
+.size-guide-table__images .size-guide-table__image {
+  inset: 0;
+  object-fit: cover;
+  object-position: center;
+  position: absolute;
+}
+
+.size-guide-table__images:not(:has(.size-guide-table__image:empty)) .size-guide-table__image:not(.is-active) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.size-guide-table__images-nav {
+  display: flex;
+}
+
+.size-guide-table__image-button {
+  backdrop-filter: blur(4px);
+  background-color: var(--color-light-pink);
+  border-block-end: 1px solid transparent;
+  color: var(--color-black-60);
+  padding: var(--spacing-12) var(--spacing-16);
+}
+
+.size-guide-table__image-button.is-active {
+  border-block-end-color: var(--color-black);
+  color: var(--color-black);
+}
+
+.size-guide-table__content {
+  margin-block-end: var(--spacing-12);
+}
+
+.size-guide-table__button {
+  margin-block-start: var(--spacing-32);
+}
+
+.size-guide-table__blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  margin-block-start: var(--spacing-40);
+}
+
+.size-guide-block {
+  background-color: var(--color-light-pink);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  padding: var(--spacing-40) var(--spacing-32);
+}
+
+.size-guide-block--light {
+  background-color: var(--color-very-light-grey);
+}
+
+@media (hover: hover) {
+  .size-guide-table__block-button:hover {
+    color: var(--color-black);
+  }
+}
+
+@media (min-width: 1024px) {
+  size-guide-modal .size-guide-table-section {
+    margin-block-start: var(--spacing-40);
+  }
+
+  size-guide-modal .size-guide-table-section:not(:first-child) {
+    margin-block-start: var(--spacing-32);
+    padding-block-start: var(--spacing-32);
+  }
+
+  .size-guide-table__grid {
+    align-items: start;
+    display: grid;
+    column-gap: var(--grid-column-gap-desktop);
+    grid-template-columns: var(--grid-template-columns);
+  }
+
+  .size-guide-table__grid > * {
+    grid-column: 7 / span 6;
+  }
+
+  .size-guide-table__images {
+    grid-column: 1 / span 5;
+    grid-row: 1 / span 7;
+  }
+
+  .size-guide-table__block-list {
+    gap: var(--spacing-8);
+    margin-block-end: var(--spacing-26);
+  }
+
+  .size-guide-table__table th:not(:first-of-type) {
+    min-width: 95px;
+  }
+
+  .size-guide-table__content {
+    grid-column-end: span 5;
+    margin-block-end: var(--spacing-28);
+  }
+
+  .size-guide-table__units,
+  .size-guide-table__nav {
+    margin-block-end: var(--spacing-26);
+  }
+
+  .size-guide-table__button {
+    margin-block-start: var(--spacing-40);
+  }
+
+  .size-guide-table__blocks {
+    flex-direction: row;
+    gap: var(--spacing-8);
+    margin-block-start: var(--spacing-64);
+  }
+}

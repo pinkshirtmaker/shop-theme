@@ -1,0 +1,385 @@
+{% liquid
+  assign heading = section.settings.heading
+  assign has_header = false
+  assign has_header_button = false
+
+  if section.settings.use_page_title
+    assign heading = page.title
+  endif
+
+  unless section.settings.button_label == empty or section.settings.button_url == null
+    assign has_header_button = true
+  endunless
+%}
+
+{% unless section.settings.subheading == empty
+  and heading == empty
+  and section.settings.subcontent == empty
+  and has_header_button == false
+%}
+  {% assign has_header = true %}
+{% endunless %}
+
+{{ 'main-page.css' | asset_url | stylesheet_tag }}
+
+<div class="main-page page-margin {% if section.settings.border_top_mobile %}page-border-top-mobile{% endif %} {% if section.settings.border_top_desktop %}page-border-top-desktop{% endif %}">
+  <div class="container">
+    {% if section.settings.show_breadcrumb %}
+      {% render 'breadcrumb', margin: true %}
+    {% endif %}
+
+    {% if has_header or section.blocks.size >= 1 %}
+      <div class="page-margin__grid grid">
+        {% if has_header %}
+          <div class="col xs12 m5">
+            <div class="main-page__header">
+              {% unless section.settings.subheading == empty %}
+                <p class="text-subheading">{{ section.settings.subheading }}</p>
+              {% endunless %}
+
+              {% unless heading == empty %}
+                <h1 class="no-margin">{{ heading }}</h1>
+              {% endunless %}
+
+              {% unless section.settings.subcontent == empty %}
+                <p class="main-page__subcontent rte">{{ section.settings.subcontent }}</p>
+              {% endunless %}
+
+              {% unless section.settings.button_label == empty or section.settings.button_url == null %}
+                <a class="text-button" href="{{ section.settings.button_url }}">
+                  {{- section.settings.button_label }}
+                  {% render 'growing-arrow' %}
+                </a>
+              {% endunless %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="col xs12 m7 {% unless has_header %}offset-m5{% endunless %}">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'page-content' %}
+                <div class="rte" {{ block.shopify_attributes }}>{{ page.content }}</div>
+
+              {% when 'heading' %}
+                <div class="main-page-block main-page-heading" {{ block.shopify_attributes }}>
+                  {% unless block.settings.subheading == empty %}
+                    <p class="main-page-heading__subheading text-subheading">{{ block.settings.subheading }}</p>
+                  {% endunless %}
+
+                  <{{ block.settings.heading_tag }} class="no-margin">
+                    {{- block.settings.text -}}
+                  </{{ block.settings.heading_tag }}>
+                </div>
+
+              {% when 'button' %}
+                {% unless block.settings.label == empty or block.settings.url == null %}
+                  {% liquid
+                    assign button_classes = ''
+
+                    case block.settings.style
+                      when 'outlined'
+                        assign button_classes = button_classes | append: ' button button--outlined button--small'
+
+                      when 'text_button'
+                        assign button_classes = button_classes | append: ' text-button'
+                    endcase
+                  %}
+
+                  <div class="main-page-block main-page-button" {{ block.shopify_attributes }}>
+                    <a class="{{ button_classes }}" href="{{ block.settings.url }}">
+                      {{- block.settings.label -}}
+                      {% if block.settings.style == 'text_button' -%}
+                        {% render 'growing-arrow' %}
+                      {%- endif %}
+                    </a>
+                  </div>
+                {% endunless %}
+
+              {% when 'image' %}
+                {% if block.settings.image %}
+                  <figure class="main-page-block main-page-image" {{ block.shopify_attributes }}>
+                    {{ block.settings.image | image_url: width: 1140 | image_tag }}
+
+                    {% unless block.settings.caption == empty %}
+                      <figcaption class="text-body-small">{{ block.settings.caption }}</figcaption>
+                    {% endunless %}
+                  </figure>
+                {% endif %}
+
+              {% when 'rich-text' %}
+                <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>
+
+              {% when 'contact-form' %}
+                <div class="main-page-block" {{ block.shopify_attributes }}>
+                  {% form 'contact' %}
+                    {% liquid
+                      assign default_email_value = form.email
+                      assign default_first_name_value = form.first_name
+                      assign default_last_name_value = form.last_name
+
+                      if customer
+                        assign default_email_value = customer.email
+                        assign default_first_name_value = customer.first_name
+                        assign default_last_name_value = customer.last_name
+                      endif
+                    %}
+
+                    {{ form.errors | default_errors }}
+
+                    {% if form.posted_successfully? %}
+                      <p class="text-body-small success">{{ 'sections.main_page.contact_form.success' | t }}</p>
+                    {% endif %}
+
+                    <div class="form-group">
+                      <div class="form-group__row">
+                        <div class="form-group__field styled-field">
+                          <label for="{{ section.id | append: '-first-name' }}">
+                            {{ 'sections.main_page.contact_form.first_name' | t }}
+                          </label>
+
+                          <input
+                            id="{{ section.id | append: '-first-name' }}"
+                            name="contact[first_name]"
+                            type="text"
+                            required
+                            {% if default_first_name_value %}
+                              value="{{ default_first_name_value }}"
+                            {% endif %}
+                            placeholder="{{ 'sections.main_page.contact_form.first_name' | t }}"
+                          >
+                        </div>
+
+                        <div class="form-group__field styled-field">
+                          <label for="{{ section.id | append: '-last-name' }}">
+                            {{ 'sections.main_page.contact_form.last_name' | t }}
+                          </label>
+
+                          <input
+                            id="{{ section.id | append: '-last-name' }}"
+                            name="contact[last_name]"
+                            type="text"
+                            required
+                            {% if default_last_name_value %}
+                              value="{{ default_last_name_value }}"
+                            {% endif %}
+                            placeholder="{{ 'sections.main_page.contact_form.last_name' | t }}"
+                          >
+                        </div>
+                      </div>
+
+                      <div class="form-group__field styled-field">
+                        <label for="{{ section.id | append: '-email' }}">
+                          {{ 'sections.main_page.contact_form.email' | t }}
+                        </label>
+
+                        <input
+                          id="{{ section.id | append: '-email' }}"
+                          name="contact[email]"
+                          type="email"
+                          required
+                          {% if default_email_value %}
+                            value="{{ default_email_value }}"
+                          {% endif %}
+                          placeholder="{{ 'sections.main_page.contact_form.email' | t }}"
+                        >
+                      </div>
+
+                      <div class="form-group__field styled-field">
+                        <label for="{{ section.id | append: '-message' }}">
+                          {{ 'sections.main_page.contact_form.message' | t }}
+                        </label>
+
+                        <textarea
+                          id="{{ section.id | append: '-message' }}"
+                          name="contact[{{ 'sections.main_page.contact_form.message' | t }}]"
+                          required
+                          placeholder="{{ 'sections.main_page.contact_form.message' | t }}"
+                          rows="6"
+                        >
+                        {{- form.body -}}
+                      </textarea>
+                      </div>
+
+                      <div class="form-group__footer">
+                        <button class="button button--large button--block button-reset">
+                          {{ 'sections.main_page.contact_form.submit' | t }}
+                          {% render 'growing-arrow' %}
+                        </button>
+                      </div>
+                    </div>
+                  {% endform %}
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-page.settings.show_breadcrumb.label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:presets.settings.subheading.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_page_title",
+      "label": "t:sections.main-page.settings.use_page_title.label",
+      "info": "t:sections.main-page.settings.use_page_title.info",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subcontent",
+      "label": "t:presets.settings.subcontent.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:presets.settings.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "t:presets.settings.button_url.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "border_top_mobile",
+      "label": "t:sections.main-page.settings.border_top_mobile.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "border_top_desktop",
+      "label": "t:sections.main-page.settings.border_top_desktop.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "page-content",
+      "name": "t:sections.main-page.blocks.page-content.name"
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.main-page.blocks.heading.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "t:presets.settings.subheading.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "t:presets.settings.text.label",
+          "default": "Heading text"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "t:presets.settings.heading_tag.label",
+          "options": [
+            { "value": "h1", "label": "t:presets.settings.heading_tag.options.h1.label" },
+            { "value": "h2", "label": "t:presets.settings.heading_tag.options.h2.label" },
+            { "value": "h3", "label": "t:presets.settings.heading_tag.options.h3.label" },
+            { "value": "h4", "label": "t:presets.settings.heading_tag.options.h4.label" },
+            { "value": "h5", "label": "t:presets.settings.heading_tag.options.h5.label" },
+            { "value": "h6", "label": "t:presets.settings.heading_tag.options.h6.label" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.main-page.blocks.button.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:presets.settings.label.label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:presets.settings.url.label",
+          "default": "/collections/all"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "t:presets.settings.style.label",
+          "options": [
+            {
+              "value": "outlined",
+              "label": "t:presets.settings.button_style.options.outlined.label"
+            },
+            {
+              "value": "text_button",
+              "label": "t:presets.settings.button_style.options.text_button.label"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "t:sections.main-page.blocks.image.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:presets.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "t:presets.settings.caption.label"
+        }
+      ]
+    },
+    {
+      "type": "contact-form",
+      "name": "t:sections.main-page.blocks.contact-form.name"
+    },
+    {
+      "type": "rich-text",
+      "name": "t:sections.main-page.blocks.rich-text.name",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:presets.settings.content.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.main-page.name",
+      "blocks": [
+        {
+          "type": "page-content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,55 @@
+{% comment %}
+  Renders a nested navigation list.
+
+  Accepts:
+  - list: {Object} The link list.
+
+  Usage:
+  {% render 'site-nav', list: linklists.main-menu %}
+{% endcomment %}
+
+{% unless list.links.size == 0 %}
+  <script src="{{ 'site-nav.js' | asset_url }}" type="module" defer></script>
+
+  {{ 'site-nav.css' | asset_url | stylesheet_tag: preload: true }}
+
+  <site-nav>
+    <ul class="site-nav list-reset">
+      {% for tier_1 in list.links %}
+        <li>
+          {% if tier_1.links.size == 0 %}
+            <a class="site-nav__link {% if tier_1.active %}is-active{% endif %}" href="{{ tier_1.url }}">
+              {{- tier_1.title -}}
+            </a>
+
+          {% else %}
+            <details class="disclosure-reset" data-target="site-nav.tier">
+              <summary class="site-nav__link {% if tier_1.active %}is-active{% endif %}">{{ tier_1.title }}</summary>
+
+              <ul class="site-nav__dropdown list-reset" tabindex="-1">
+                {% for tier_2 in tier_1.links %}
+                  {% if tier_2.links.size == 0 %}
+                    <a class="site-nav__child" href="{{ tier_2.url }}">{{ tier_2.title }}</a>
+
+                  {% else %}
+                    <details class="disclosure-reset">
+                      <summary class="site-nav__child">{{ tier_2.title }}</summary>
+
+                      <ul class="site-nav__nested list-reset">
+                        {% for tier_3 in tier_2.links %}
+                          <li>
+                            <a class="site-nav__child" href="{{ tier_3.url }}">{{ tier_3.title }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </details>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </details>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </site-nav>
+{% endunless %}

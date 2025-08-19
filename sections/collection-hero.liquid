@@ -1,0 +1,66 @@
+{{ 'collection-hero.css' | asset_url | stylesheet_tag }}
+
+<section class="collection-hero">
+  <div class="container">
+    {% render 'breadcrumb', breadcrumb_items: collection.metafields.custom.breadcrumb_items %}
+
+    <div class="collection-hero__content">
+      <div class="grid">
+        <div class="col xs12 l6">
+          <div class="collection-hero__header">
+            <h1 class="no-margin">{{ collection.title }}</h1>
+
+            {% unless collection.description == blank %}
+              <truncate-content class="collection-description">
+                <div class="collection-description__content" data-target="truncate-content.content">
+                  {{ collection.description }}
+                </div>
+
+                <button
+                  class="collection-description__button button-reset"
+                  type="button"
+                  data-target="truncate-content.button"
+                >
+                  <span class="collection-description__more"
+                    ><span class="text-button">{{ 'sections.collection_hero.read_more' | t }}</span>
+                    {% render 'icon-misc', icon: 'plus' -%}
+                  </span>
+
+                  <span class="collection-description__less"
+                    ><span class="text-button">{{ 'sections.collection_hero.read_less' | t }}</span>
+                    {% render 'icon-misc', icon: 'minus' -%}
+                  </span>
+                </button>
+              </truncate-content>
+            {% endunless %}
+          </div>
+        </div>
+
+        {% if collection.image %}
+          <div class="col xs12 l6">
+            {{ collection.image | image_url: width: 1248, height: 400 | image_tag: preload: true, class: 'image' }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% unless collection.metafields.custom.custom_filters == blank
+        or collection.metafields.custom.custom_filters.value.count == 0
+      %}
+        <detect-overflow>
+          <div class="quick-links indicate-overflow">
+            <div class="quick-links__container hide-scrollbar" data-target="detect-overflow.scroll-container">
+              {% for filter in collection.metafields.custom.custom_filters.value %}
+                <a
+                  href="{{ filter.link }}"
+                  class="quick-links__link text-subheading {% if request.path == filter.link %}is-active{% endif %}"
+                >
+                  {{- filter.title -}}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </detect-overflow>
+      {% endunless %}
+    </div>
+  </div>
+</section>

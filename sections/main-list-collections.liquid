@@ -1,0 +1,55 @@
+<section class="main-list-collections">
+  <div class="container">
+    <h1>{{ 'sections.main_list_collections.title' | t }}</h1>
+
+    {% paginate collections by section.settings.collections_per_page %}
+      {% if collections.size == 0 %}
+        <h2>{{ 'sections.main_list_collections.empty' | t }}</h2>
+
+      {% else %}
+        <ul class="grid list-reset">
+          {% for collection in collections %}
+            <li class="col xs12 s6 m3">
+              <a
+                class="card"
+                href="{{ collection.url }}"
+              >
+                <div class="card__thumbnail">
+                  {% if collection.featured_image %}
+                    {{
+                      collection.featured_image
+                      | image_url: width: 592
+                      | image_tag: loading: 'lazy', class: 'card__image image'
+                    }}
+                  {% endif %}
+                </div>
+
+                <p>{{ collection.title }}</p>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="pagination">
+          {{ paginate | default_pagination }}
+        </div>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-list-collections.name",
+  "settings": [
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "t:sections.main-list-collections.settings.collections_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

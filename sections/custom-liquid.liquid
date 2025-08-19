@@ -1,0 +1,21 @@
+<section>
+  {{ section.settings.liquid }}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.custom-liquid.name",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "liquid",
+      "label": "t:presets.settings.liquid.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.custom-liquid.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,113 @@
+/**
+ * Cart drawer.
+ */
+.cart-drawer {
+  max-width: 485px;
+}
+
+.cart-drawer:has(.cart-drawer-empty) {
+  max-width: 370px;
+}
+
+.cart-drawer__total {
+  border-block-start: 1px solid var(--color-light-grey);
+  padding: var(--spacing-16) var(--spacing-32);
+}
+
+.cart-drawer__body {
+  padding: var(--spacing-32);
+}
+
+.cart-drawer__body:has(.cart-drawer__added.is-active) {
+  padding-block-start: var(--spacing-16);
+}
+
+.cart-drawer .drawer__header {
+  margin: 0;
+}
+
+.cart-drawer__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-46);
+}
+
+.cart-drawer__items .line-item:not(:first-of-type) {
+  border-block-start: 1px solid var(--color-light-grey);
+  padding-block-start: var(--spacing-16);
+}
+
+.cart-drawer__footer .button {
+  white-space: nowrap;
+}
+
+.cart-drawer__cart-button.button {
+  --border-color: var(--color-light-grey);
+  border-inline: 0;
+  text-decoration: underline;
+}
+
+.cart-drawer__added {
+  align-items: center;
+  border-block-end: 1px solid var(--color-light-grey);
+  display: flex;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-12);
+  gap: var(--spacing-8);
+  margin-block-end: var(--spacing-16);
+  padding-block-end: var(--spacing-12);
+}
+
+.cart-drawer__added:not(.is-active) {
+  display: none;
+}
+
+.cart-drawer__accelerated-checkout {
+  padding: calc(var(--spacing-16) - var(--accelerated-checkout-button-margin-top)) var(--spacing-32) var(--spacing-16);
+}
+
+.cart-drawer-recommendations {
+  left: 0;
+  max-width: 346px;
+  position: absolute;
+  z-index: -1;
+}
+
+.cart-drawer-recommendations.is-active {
+  transform: translateX(-100%);
+}
+
+.cart-drawer-recommendations .drawer__header {
+  background-color: var(--color-light-pink);
+}
+
+.cart-drawer-recommendations .drawer__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  padding: var(--spacing-32);
+}
+
+@media (max-width: 1023px) {
+  .cart-drawer-recommendations {
+    display: none;
+  }
+}
+
+.cart-drawer-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.cart-drawer-empty__blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+}
+
+.cart-drawer-empty__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}

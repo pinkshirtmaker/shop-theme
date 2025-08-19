@@ -1,0 +1,36 @@
+{% comment %}
+  Used to display title and pricing information in the product form.
+
+  Accepts:
+  - product: {Object} The product object.
+  - selected_variant: {Object} The current variant.
+
+  Usage:
+  {% render 'product-form-header',
+    product: product,
+    selected_variant: product.selected_or_first_available_variant
+  %}
+{% endcomment %}
+
+<div class="product-form-header">
+  <div class="product-form-header__row">
+    <h1 class="product-form-header__title text-h4 no-margin">{{ product.title }}</h1>
+
+    <div class="product-form-header__price text-right" data-target="main-product.price">
+      {% render 'product-price', variant: selected_variant, class: 'text-h4 no-margin' %}
+
+      {% if cart.taxes_included and settings.show_taxes_included %}
+        <small>{{ 'sections.main_cart.taxes_included' | t }}</small>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="product-form-header__row product-form-header__link">
+    <a href="{{ product.url }}" class="text-button">
+      {{ 'sections.main_product.full_details' | t }}
+      {% render 'growing-arrow' %}
+    </a>
+  </div>
+
+  {{ form | payment_terms }}
+</div>

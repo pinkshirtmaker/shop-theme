@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="grid no-gutter">
+    <div class="col xs12 m8 l6 offset-l2">
+      {% form 'contact' %}
+        {% liquid
+          assign default_email_value = false
+
+          if form.email
+            assign default_email_value = form.email
+
+          elsif customer
+            assign default_email_value = customer.email
+          endif
+        %}
+
+        {{ form.errors | default_errors }}
+
+        {% if form.posted_successfully? %}
+          <p class="text-body-small success">{{ 'sections.contact_form.success' | t }}</p>
+        {% endif %}
+
+        <div class="form-group">
+          <div class="form-group__field styled-field">
+            <label for="{{ section.id | append: '-email' }}">
+              {{ 'sections.contact_form.email' | t }}
+            </label>
+
+            <input
+              id="{{ section.id | append: '-email' }}"
+              name="contact[email]"
+              type="email"
+              required
+              {% if default_email_value %}
+                value="{{ default_email_value }}"
+              {% endif %}
+              placeholder="{{ 'sections.contact_form.email' | t }}"
+            >
+          </div>
+
+          <div class="form-group__field styled-field">
+            <label for="{{ section.id | append: '-message' }}">
+              {{ 'sections.contact_form.message' | t }}
+            </label>
+
+            <textarea
+              id="{{ section.id | append: '-message' }}"
+              name="contact[{{ 'sections.contact_form.message' | t }}]"
+              required
+              placeholder="{{ 'sections.contact_form.message' | t }}"
+            >
+              {{- form.body -}}
+            </textarea>
+          </div>
+
+          <div class="form-group__footer">
+            <button class="button button-reset">{{ 'sections.contact_form.submit' | t }}</button>
+          </div>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "class": "section-margin"
+}
+{% endschema %}

@@ -1,0 +1,80 @@
+{% liquid
+  assign featured_article_handle = blog.handle | append: '/' | append: blog.metafields.custom.featured_article_handle
+  assign featured_article = articles[featured_article_handle]
+  assign load_more_label = 'sections.main_blog.load_more_articles' | t
+%}
+
+{{ 'main-blog.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'main-blog.js' | asset_url }}" type="module" defer></script>
+
+{% paginate blog.articles by section.settings.articles_per_page %}
+  <main-blog class="main-blog" section-id="{{ section.id }}">
+    {% if blog.articles.size == 0 %}
+      <div class="main-blog__empty container">
+        <h1>{{ blog.title }}</h1>
+        <p class="text-h4">{{ 'sections.main_blog.empty' | t }}</p>
+      </div>
+    {% else %}
+      {% if featured_article == empty %}
+        <div class="container">
+          <h1 class="main-blog__title">{{ blog.title }}</h1>
+        </div>
+      {% else %}
+        {% render 'article-feature',
+          heading: blog.title,
+          article: featured_article,
+          article_button_style: 'text',
+          heading_style: 'large',
+          heading_tag: 'h1'
+        %}
+      {% endif %}
+
+      <div class="container">
+        {% render 'pagination', paginate: paginate, previous: true %}
+
+        <ul class="main-blog__grid grid margin list-reset" data-target="main-blog.grid">
+          {% for article in blog.articles %}
+            {% unless article.handle == featured_article.handle %}
+              {% liquid
+                assign preload = false
+
+                if forloop.first
+                  assign preload = true
+                endif
+              %}
+
+              <li class="col xs12 m6 l4">
+                {% render 'article-card', article: article, preload: preload %}
+              </li>
+            {% endunless %}
+          {% endfor %}
+        </ul>
+
+        {% render 'pagination',
+          paginate: paginate,
+          size: blog.articles.size,
+          load_label: load_more_label,
+          count_attributes: 'data-target="main-blog.paginate-count"',
+          load_attributes: 'data-target="main-blog.load-next"'
+        %}
+      </div>
+    {% endif %}
+  </main-blog>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "t:sections.main-blog.name",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "t:sections.main-blog.settings.articles_per_page.label",
+      "min": 1,
+      "max": 48,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

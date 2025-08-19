@@ -1,0 +1,70 @@
+/**
+ * Account page styles.
+ */
+.main-account {
+  margin-block: var(--spacing-64);
+}
+
+.main-account__body {
+  margin-block-start: var(--spacing-24);
+}
+
+.main-account__return {
+  display: block;
+  margin-block-end: var(--spacing-24);
+}
+
+.main-account table tfoot:before {
+  line-height: var(--spacing-16);
+  content: '\200C';
+  display: block;
+}
+
+.main-account__address-form:not(.is-active) {
+  display: none;
+}
+
+.main-account__addresses {
+  margin-block-start: var(--spacing-32);
+}
+
+.main-account__address {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.main-account__address + .main-account__address {
+  margin-block-start: var(--spacing-32);
+}
+
+@media (max-width: 767px) {
+  .main-account table {
+    width: 100%;
+  }
+
+  .main-account table thead {
+    display: none;
+  }
+
+  .main-account table tr {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .main-account table td {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-8);
+    justify-content: space-between;
+  }
+
+  .main-account table td span[data-label]::before {
+    content: attr(data-label);
+  }
+
+  .main-account tfoot tr td:first-of-type {
+    display: none;
+  }
+}

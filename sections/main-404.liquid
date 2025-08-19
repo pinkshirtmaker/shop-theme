@@ -1,0 +1,106 @@
+{{ 'main-404.css' | asset_url | stylesheet_tag }}
+
+<div class="main-404">
+  <div class="main-404__content">
+    {% unless section.settings.heading == empty %}
+      <h1 class="main-404__heading no-margin">{{ section.settings.heading }}</h1>
+    {% endunless %}
+
+    {% unless section.settings.subheading == empty %}
+      <p class="text-h1 no-margin">{{ section.settings.subheading }}</p>
+    {% endunless %}
+
+    {% unless section.blocks.size == 0 %}
+      <div class="main-404__buttons">
+        {% for block in section.blocks %}
+          {% unless block.settings.label == empty or block.settings.url == null %}
+            {% liquid
+              assign button_classes = ''
+
+              case block.settings.style
+                when 'outlined'
+                  assign button_classes = button_classes | append: ' button button--outlined button--small'
+
+                when 'text_button'
+                  assign button_classes = button_classes | append: ' text-button'
+              endcase
+            %}
+
+            <a class="{{ button_classes }}" href="{{ block.settings.url }}">
+              {{- block.settings.label -}}
+              {% if block.settings.style == 'text_button' -%}
+                {% render 'growing-arrow' %}
+              {%- endif %}
+            </a>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    {% endunless %}
+  </div>
+
+  {% if section.settings.image %}
+    {{ section.settings.image | image_url: width: 1440, height: 1152 | image_tag: class: 'main-404__image' }}
+  {% else %}
+    <div class="main-404__image"></div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "404"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "Looks like our buttons have fallen off..."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:presets.settings.image.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "t:presets.blocks.button.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:presets.settings.label.label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:presets.settings.url.label",
+          "default": "/collections/all"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "t:presets.settings.style.label",
+          "options": [
+            {
+              "value": "outlined",
+              "label": "t:presets.settings.button_style.options.outlined.label"
+            },
+            {
+              "value": "text_button",
+              "label": "t:presets.settings.button_style.options.text_button.label"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

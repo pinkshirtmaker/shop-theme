@@ -1,0 +1,75 @@
+{% render 'article-feature',
+  text_color: section.settings.text_color,
+  text_color_invert: section.settings.text_color_invert,
+  background_color: section.settings.background_color,
+  heading: section.settings.heading,
+  all_articles_label: section.settings.all_articles_label,
+  all_articles_url: section.settings.all_articles_url,
+  article: section.settings.article,
+  article_button_label: section.settings.article_button_label,
+  image: section.settings.image
+%}
+
+{% schema %}
+{
+  "name": "t:sections.article-feature.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Blog heading"
+    },
+    {
+      "type": "text",
+      "id": "all_articles_label",
+      "label": "t:sections.article-feature.settings.all_articles_label.label",
+      "default": "View all articles"
+    },
+    {
+      "type": "url",
+      "id": "all_articles_url",
+      "label": "t:sections.article-feature.settings.all_articles_url.label",
+      "info": "t:sections.article-feature.settings.all_articles_url.info"
+    },
+    {
+      "type": "article",
+      "id": "article",
+      "label": "t:presets.settings.article.label"
+    },
+    {
+      "type": "text",
+      "id": "article_button_label",
+      "label": "t:presets.settings.button_label.label",
+      "default": "Read more"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:presets.settings.image.label",
+      "info": "t:sections.article-feature.settings.image.info"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:presets.settings.background_color.label"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:presets.settings.text_color.label"
+    },
+    {
+      "type": "color",
+      "id": "text_color_invert",
+      "label": "t:presets.settings.text_color_invert.label",
+      "info": "t:presets.settings.text_color_invert.info"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.article-feature.name"
+    }
+  ]
+}
+{% endschema %}

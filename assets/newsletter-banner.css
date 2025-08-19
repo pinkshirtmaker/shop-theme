@@ -1,0 +1,186 @@
+/**
+ * Newsletter banner.
+ */
+.newsletter-banner {
+  background-color: var(--color-brand-pink);
+  display: block;
+  padding-block: var(--spacing-32) var(--spacing-20);
+  padding-inline: var(--container-gutter);
+  position: relative;
+}
+
+.newsletter-banner__container {
+  align-items: center;
+  display: grid;
+  gap: var(--spacing-24);
+}
+
+.newsletter-banner__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.newsletter-banner__subheading {
+  display: none;
+}
+
+.newsletter-banner__subheading a,
+.newsletter-banner-form__subheading a,
+.newsletter-banner-state__subheading a {
+  font-weight: var(--font-weight-bold);
+  text-decoration: underline;
+}
+
+.newsletter-banner-form,
+.newsletter-banner-form__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.newsletter-banner-form__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.newsletter-banner-form .styled-field {
+  align-self: start;
+  margin: 0;
+  width: 100%;
+}
+
+.newsletter-banner-form__submit {
+  color: var(--color-brand-pink);
+  white-space: nowrap;
+}
+
+.newsletter-banner-form__submit .icon {
+  flex-shrink: 0;
+}
+
+.newsletter-banner-form .styled-field {
+  --label-background: var(--color-brand-pink);
+  --label-color: var(--color-black-60);
+  --input-background-color: transparent;
+  --input-border-color: var(--color-black-60);
+}
+
+.newsletter-banner .loader {
+  --color: var(--color-black);
+  --base-color: var(--color-black-15);
+  --loader-size: 48px;
+  --loader-border-width: 4px;
+  height: var(--loader-size);
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--loader-size);
+}
+
+.newsletter-banner[data-state='loading'] .loader {
+  opacity: 1;
+}
+
+.newsletter-banner[data-state='loading'] .newsletter-banner__container {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.newsletter-banner-state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  margin-inline: auto;
+  max-width: 600px;
+  padding-block: var(--spacing-20) var(--spacing-56);
+  padding-inline: var(--container-gutter);
+  text-align: center;
+  width: 100%;
+}
+
+.newsletter-banner-state__icon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.newsletter-banner-state__icon:not(:last-child) {
+  margin-block-end: var(--spacing-8);
+}
+
+.newsletter-banner-state__icon:has(.icon__tick) {
+  border: 1px solid var(--color-black);
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+}
+
+.newsletter-banner-state__icon .icon__warning {
+  height: 24px;
+  width: 24px;
+}
+
+.newsletter-banner:not([data-state='success']) .newsletter-banner__success,
+.newsletter-banner:not([data-state='error']) .newsletter-banner__error,
+.newsletter-banner:is([data-state='success'], [data-state='error']) .newsletter-banner__container {
+  display: none;
+}
+
+:is(.template-blog, .template-article, .template-404) .newsletter-banner {
+  border-block-start: 1px solid var(--color-black-15);
+}
+
+@media (min-width: 1024px) {
+  .newsletter-banner {
+    padding-block: var(--spacing-48);
+  }
+
+  .newsletter-banner__container {
+    grid-template-columns: minmax(0, 40%) minmax(0, 50%);
+    gap: var(--spacing-124);
+    margin-inline: auto;
+    max-width: 1148px;
+  }
+
+  .newsletter-banner__subheading {
+    display: block;
+  }
+
+  .newsletter-banner-form {
+    max-width: 100%;
+  }
+
+  .newsletter-banner-form,
+  .newsletter-banner-form__row {
+    gap: var(--spacing-24) var(--spacing-16);
+  }
+
+  .newsletter-banner-form__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 50%));
+  }
+
+  .newsletter-banner-form__row--submit {
+    grid-template-columns: repeat(1, minmax(0, 65%)) repeat(1, minmax(0, 35%));
+  }
+
+  .newsletter-banner-form__subheading {
+    display: none;
+  }
+
+  .newsletter-banner-form input[type='text'],
+  .newsletter-banner-form input[type='email'] {
+    min-height: 37px;
+    padding-block: var(--spacing-8);
+  }
+
+  .newsletter-banner-state {
+    padding-block: var(--spacing-4);
+  }
+}

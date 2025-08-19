@@ -1,0 +1,41 @@
+{% liquid
+  capture icon_misc_warning
+    render 'icon-misc', icon: 'warning'
+  endcapture
+%}
+
+<script>
+  window.theme = {
+    routes: {
+      cart_url: {{ routes.cart_url | json }},
+      cart_add_url: {{ routes.cart_add_url | json }},
+      cart_update_url: {{ routes.cart_update_url | json }},
+      root_url: {{ routes.root_url | json }},
+      product_recommendations_url: {{ routes.product_recommendations_url | json }}
+    },
+
+    money_format: {{ shop.money_format | json }},
+    page_type: {{ request.page_type | json }},
+
+    strings: {
+      sections: {
+        main_product: {
+          add_to_cart: {{ 'sections.main_product.add_to_cart' | t | json }},
+          adding_to_cart: {{ 'sections.main_product.adding_to_cart' | t | json }},
+          out_of_stock: {{ 'sections.main_product.out_of_stock' | t | json }},
+          unavailable: {{ 'sections.main_product.unavailable' | t | json }}
+        }
+      }
+    },
+
+    settings: {
+      klaviyo_public_api_key: {{ settings.klaviyo_public_api_key | json }}
+    },
+
+    icons: {
+      misc: {
+        warning: {{ icon_misc_warning | json }}
+      }
+    }
+  }
+</script>

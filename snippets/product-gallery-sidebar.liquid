@@ -1,0 +1,62 @@
+{% comment %}
+  Renders the gallery sidebar.
+
+  Accepts:
+  - namespace: {String} The slider namespace.
+  - primary_image: {Object} The product's primary image.
+  - media_ids: {Array} A list of supporting media items.
+
+  Usage:
+  {% render 'product-gallery-sidebar' %}
+{% endcomment %}
+
+<div class="product-gallery__sidebar">
+  <button
+    id="{{ namespace }}-thumbnails-prev"
+    class="product-gallery__thumbs-arrow button-reset"
+    type="button"
+    title="{{ 'accessibility.carousel.previous' | t }}"
+  >
+    {% render 'icon-direction', icon: 'arrow-up' %}
+  </button>
+
+  <swiper-container
+    id="{{ namespace }}-thumbnails"
+    class="product-gallery__thumbs"
+    slides-per-view="5"
+    space-between="8"
+    direction="vertical"
+    navigation-prev-el="#{{ namespace }}-thumbnails-prev"
+    navigation-next-el="#{{ namespace }}-thumbnails-next"
+  >
+    {% if primary_image %}
+      <swiper-slide>
+        {{
+          primary_image
+          | image_url: height: 257, width: 213.8
+          | image_tag: class: 'product-gallery__thumbnail-image'
+        }}
+      </swiper-slide>
+    {% endif %}
+
+    {% for media_id in media_ids %}
+      {% liquid
+        assign media_id_int = media_id | times: 1
+        assign media = product.media | where: 'id', media_id_int | first
+      %}
+
+      <swiper-slide>
+        {{ media | image_url: height: 257, width: 213.8 | image_tag: class: 'product-gallery__thumbnail-image' }}
+      </swiper-slide>
+    {% endfor %}
+  </swiper-container>
+
+  <button
+    id="{{ namespace }}-thumbnails-next"
+    class="product-gallery__thumbs-arrow button-reset"
+    type="button"
+    title="{{ 'accessibility.carousel.next' | t }}"
+  >
+    {% render 'icon-direction', icon: 'arrow-down' %}
+  </button>
+</div>

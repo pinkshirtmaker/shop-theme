@@ -1,0 +1,75 @@
+{% comment %}
+  Renders a breadcrumb trail.
+
+  Accepts:
+  - breadcrumb_items: {Object} The resource's breadcrumb items metafield.
+  - custom_item: {String} A single custom item, overrides other logic.
+
+  Usage:
+  {% render 'breadcrumb', breadcrumb__items: product.metafields.custom.breadcrumb_items %}
+{% endcomment %}
+
+{% assign breadcrumb_item_classes = 'breadcrumb__item text-subheading' %}
+
+{% capture separator %}
+  <span class="breadcrumb__separator text-subheading"></span>
+{% endcapture %}
+
+{% capture home_item %}
+  <a class="{{ breadcrumb_item_classes }}" href="{{ routes.root_url }}">{{ 'breadcrumb.home' | t }}</a>
+{% endcapture %}
+
+{% capture custom_items %}
+  {% if breadcrumb_items %}
+    {% unless breadcrumb_items.count == 0 %}
+      {% for breadcrumb_item in breadcrumb_items.value %}
+        {% assign breadcrumb_url = breadcrumb_item.url %}
+
+        {% if breadcrumb_item.relative %}
+          {% unless request.locale.root_url == '/' %}
+            {% assign breadcrumb_url = breadcrumb_url | prepend: request.locale.root_url %}
+          {% endunless %}
+        {% endif %}
+
+        <a class="{{ breadcrumb_item_classes }}" href="{{ breadcrumb_url }} {% unless request.page_type == 'product' %}{% if breadcrumb_url == request.path %}is-active{% endif %}{% endunless %}">{{ breadcrumb_item.title }}</a>
+
+        {{ separator }}
+      {% endfor %}
+    {% endunless %}
+  {% endif %}
+{% endcapture %}
+
+<div class="breadcrumb {% if margin %}breadcrumb--margin{% endif %}">
+  {% if custom_item %}
+    {{ home_item }}
+    {{ separator }}
+
+    <span class="{{ breadcrumb_item_classes }} is-active">{{ custom_item }}</span>
+
+  {% elsif request.page_type == 'product'
+    or request.page_type == 'collection'
+    or request.page_type == 'cart'
+    or request.page_type == 'article'
+    or request.page_type == 'page'
+  %}
+    {{ home_item }}
+    {{ separator }}
+    {{ custom_items }}
+
+    {% if request.page_type == 'cart' %}
+      <span class="{{ breadcrumb_item_classes }} is-active">{{ 'sections.main_cart.title' | t }}</span>
+    {% elsif request.page_type == 'article' %}
+      <a class="{{ breadcrumb_item_classes }}" href="{{ blog.url }}">{{ blog.title }}</a>
+
+      {{ separator }}
+
+      <span class="{{ breadcrumb_item_classes }} is-active">{{ article.title }}</span>
+    {% elsif request.page_type == 'page' %}
+      <span class="{{ breadcrumb_item_classes }} is-active">{{ page.title }}</span>
+    {% else %}
+      <span class="{{ breadcrumb_item_classes }} is-active">{{ product.title | default: collection.title }}</span>
+    {% endif %}
+  {% else %}
+    {{ custom_items }}
+  {% endif %}
+</div>

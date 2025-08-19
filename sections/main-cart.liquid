@@ -1,0 +1,183 @@
+{{ 'main-cart.css' | asset_url | stylesheet_tag }}
+
+<cart-section
+  section-name="main-cart"
+  {% if cart.empty? %}
+    is-empty
+  {% endif %}
+>
+  <div class="main-cart">
+    <div class="container">
+      {% render 'breadcrumb' %}
+
+      {% if cart.items.size == 0 %}
+        <div class="main-cart__empty">
+          {% unless section.settings.empty_cart_heading == empty %}
+            <p class="text-h1 no-margin">{{ section.settings.empty_cart_heading }}</p>
+          {% endunless %}
+
+          {% unless section.settings.empty_cart_subheading == empty %}
+            <p>{{ section.settings.empty_cart_subheading }}</p>
+          {% endunless %}
+
+          {% unless section.settings.empty_cart_button_label == empty
+            or section.settings.empty_cart_button_url == null
+          %}
+            <a class="button button--block button--outlined" href="{{ section.settings.empty_cart_button_url }}">
+              {{ section.settings.empty_cart_button_label }}
+            </a>
+          {% endunless %}
+        </div>
+
+      {% else %}
+        {% form 'cart', cart %}
+          <div class="main-cart__grid grid">
+            <div class="col xs12 l6">
+              <h1 class="main-cart__title no-margin" data-target="cart-section.count">
+                {{ 'sections.main_cart.title' | t }} ({{ cart.item_count }})
+              </h1>
+
+              <div class="main-cart__items" data-target="cart-section.items">
+                {% for item in cart.items %}
+                  {% render 'line-item', item: item, section_name: 'main-cart' %}
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="col xs12 l6 main-cart__sidebar">
+              <div class="main-cart-summary">
+                <div class="main-cart-summary__header">
+                  <p class="text-subheading" data-target="cart-section.summary-heading">
+                    {{ 'sections.main_cart.summary' | t }} (
+                    {{- 'sections.main_cart.item_count' | t: count: cart.item_count -}}
+                    )
+                  </p>
+                </div>
+
+                <div class="main-cart-summary__row" data-target="cart-section.subtotal">
+                  <p class="text-subheading">{{ 'sections.main_cart.subtotal' | t }}</p>
+                  <p class="text-subheading">{{ cart.items_subtotal_price | money_without_trailing_zeros }}</p>
+                </div>
+
+                <div class="main-cart-summary__row">
+                  <p class="text-subheading">{{ 'sections.main_cart.delivery' | t }}</p>
+                </div>
+
+                <div class="display-contents" data-target="cart-section.discounts">
+                  {% if cart.cart_level_discount_applications.size > 0 %}
+                    {% for discount in cart.cart_level_discount_applications %}
+                      <div class="main-cart-summary__row">
+                        <p class="text-subheading">
+                          {% render 'icon-misc', icon: 'discount' %}
+                          {{- discount.title }} (-
+                          {{- discount.total_allocated_amount | money_without_trailing_zeros -}}
+                          )
+                        </p>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                {% if section.settings.note %}
+                  <div class="main-cart-summary__row main-cart-summary__row--large">
+                    <details
+                      class="main-cart-summary__note disclosure-reset"
+                      {% if cart.note %}
+                        open
+                      {% endif %}
+                    >
+                      <summary class="main-cart-summary__toggle text-subheading">
+                        {{ 'sections.main_cart.note' | t }}
+                        {% render 'icon-misc', icon: 'plus' %}
+                        {% render 'icon-misc', icon: 'minus' %}
+                      </summary>
+
+                      <label class="visually-hidden" for="{{ section.id | append: '-note' }}">
+                        {{ 'sections.main_cart.note' | t }}
+                      </label>
+
+                      <textarea id="{{ section.id | append: '-note' }}" name="note">
+                      {{- cart.note -}}
+                    </textarea>
+                    </details>
+                  </div>
+                {% endif %}
+
+                <div class="main-cart-summary__footer">
+                  <div class="main-cart-summary__row" data-target="cart-section.total">
+                    <p>
+                      <span class="text-h4 no-margin">{{ 'sections.main_cart.total' | t }}</span>
+
+                      {% if cart.taxes_included %}
+                        <span class="text-subheading">({{ 'sections.main_cart.taxes_included' | t }})</span>
+                      {% endif %}
+                    </p>
+
+                    <p class="text-h4 no-margin">{{ cart.total_price | money_without_trailing_zeros }}</p>
+                  </div>
+
+                  <button class="button button--block button--large button-reset" name="checkout">
+                    {{ 'sections.main_cart.checkout' | t }}
+                  </button>
+
+                  {% if additional_checkout_buttons %}
+                    <div class="main-cart-summary__accelerated-checkout additional-checkout-buttons--vertical">
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="main-cart-summary__additional">
+                  <p>{{ 'sections.main_cart.guarantee' | t }}</p>
+                  {% render 'payment-logos' %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endform %}
+      {% endif %}
+    </div>
+  </div>
+</cart-section>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "note",
+      "label": "t:sections.main-cart.settings.note.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-cart.settings.header__1.content"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Your bag is empty"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "empty_cart_subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "Explore our collection of amazing products and start filling it with your favorites. Happy shopping!"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_button_label",
+      "label": "t:sections.main-cart.settings.empty_cart_label.label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "empty_cart_button_url",
+      "label": "t:sections.main-cart.settings.empty_cart_url.label",
+      "default": "/collections/all"
+    }
+  ]
+}
+{% endschema %}

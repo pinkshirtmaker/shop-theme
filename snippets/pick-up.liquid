@@ -1,0 +1,92 @@
+{% comment %}
+  Renders a pick up preview and drawer.
+  - Note: The stylesheet is loaded in theme-styles.liquid to improve dynamic loading and layout shifts.
+
+  Accepts:
+  - selected_variant: {Object} The default variant.
+
+  Usage:
+  {% render 'pick-up', selected_variant: variant %}
+{% endcomment %}
+
+{% liquid
+  assign availabilities = selected_variant.store_availabilities | where: 'pick_up_enabled', true
+  assign availability = availabilities.first
+%}
+
+{% if availability %}
+  <div class="pick-up">
+    <p class="no-margin">
+      {% if availability.available %}
+        {{ 'pick_up.available_at' | t: location: availability.location.name }}
+
+      {% else %}
+        {{ 'pick_up.unavailable_at' | t: location: availability.location.name }}
+      {% endif %}
+    </p>
+
+    <p class="text-body-small">{{ availability.pick_up_time }}</p>
+
+    {% if availabilities.size >= 2 %}
+      <button
+        class="text-link button-reset pick-up__button"
+        type="button"
+        data-toggle="pick-up"
+      >
+        {{ 'pick_up.show_other_locations' | t }}
+      </button>
+
+      <toggle-element
+        class="drawer"
+        data-namespace="pick-up"
+        data-hoist
+      >
+        <div class="drawer__container">
+          <div class="drawer__header">
+            <div>
+              <h2 class="text-h4 no-margin">{{ selected_variant.product.title }}</h2>
+
+              {% unless selected_variant.product.has_only_default_variant %}
+                <p>{{ selected_variant.title }}</p>
+              {% endunless %}
+            </div>
+
+            <button class="drawer__close button-reset" data-toggle="pick-up">
+              <span class="visually-hidden">{{ 'pick_up.close' | t }}</span>
+
+              {% render 'icon-misc', icon: 'close' %}
+            </button>
+          </div>
+
+          <div class="drawer__body padding">
+            <ul class="pick-up__list list-reset">
+              {% for availability in availabilities %}
+                {% assign address = availability.location.address %}
+
+                <li>
+                  <p>{{ availability.location.name }}</p>
+
+                  <p class="pick-up__availability text-body-small">
+                    {% if availability.available %}
+                      {% render 'icon-misc', icon: 'tick' %}
+                      {{ 'pick_up.available' | t }}, {{ availability.pick_up_time | downcase }}
+
+                    {% else %}
+                      {{ 'pick_up.unavailable' | t }}
+                    {% endif %}
+                  </p>
+
+                  <address class="pick-up__address">{{ address | format_address }}</address>
+
+                  {% if address.phone.size >= 1 %}
+                    <p>{{ address.phone }}</p>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </toggle-element>
+    {% endif %}
+  </div>
+{% endif %}

@@ -1,0 +1,144 @@
+{% liquid
+  assign namespace = 'newsletter-banner'
+
+  if section
+    assign namespace = namespace | append: '-' | append: section.id
+  endif
+%}
+
+{{ 'newsletter-banner.css' | asset_url | stylesheet_tag }}
+
+<script src="{{'newsletter-banner.js' |  asset_url}}" type="module" defer></script>
+
+<newsletter-banner class="newsletter-banner">
+  <div class="newsletter-banner__container">
+    <div class="newsletter-banner__content">
+      {% unless section.settings.heading == empty %}
+        <p class="text-h3 no-margin">{{ section.settings.heading }}</p>
+      {% endunless %}
+
+      {% unless section.settings.subheading == empty %}
+        <p class="newsletter-banner__subheading text-body-small">{{ section.settings.subheading }}</p>
+      {% endunless %}
+    </div>
+
+    <form class="newsletter-banner-form" data-target="newsletter-banner.form">
+      <div class="newsletter-banner-form__row">
+        <div class="styled-field">
+          <label for="{{ namespace }}-first-name">{{ 'sections.newsletter_banner.first_name' | t }}</label>
+          <input id="{{ namespace }}-first-name" name="first_name" type="text" placeholder=" ">
+        </div>
+
+        <div class="styled-field">
+          <label for="{{ namespace }}-last-name">{{ 'sections.newsletter_banner.last_name' | t }}</label>
+          <input id="{{ namespace }}-last-name" name="last_name" type="text" placeholder=" ">
+        </div>
+      </div>
+
+      <div class="newsletter-banner-form__row newsletter-banner-form__row--submit">
+        <div class="styled-field">
+          <label for="{{ namespace }}-email">{{ 'sections.newsletter_banner.email' | t }}</label>
+          <input id="{{ namespace }}-email" name="email" type="email" required placeholder=" ">
+        </div>
+
+        <div class="newsletter-banner-form__footer">
+          {% unless section.settings.subheading == empty %}
+            <p class="newsletter-banner-form__subheading text-body-small">{{ section.settings.subheading }}</p>
+          {% endunless %}
+
+          <button class="newsletter-banner-form__submit button-reset button button--small">
+            {{ 'sections.newsletter_banner.submit' | t }}
+            {% render 'icon-direction', icon: 'arrow-right' %}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="newsletter-banner__success newsletter-banner-state">
+    <span class="newsletter-banner-state__icon">
+      {% render 'icon-misc', icon: 'tick' %}
+    </span>
+
+    {% unless section.settings.success_heading == empty %}
+      <p class="text-h4 no-margin">{{ section.settings.success_heading }}</p>
+    {% endunless %}
+
+    {% unless section.settings.success_subheading == empty %}
+      <p class="newsletter-banner-state__subheading">{{ section.settings.success_subheading }}</p>
+    {% endunless %}
+  </div>
+
+  <div class="newsletter-banner__error newsletter-banner-state">
+    <span class="newsletter-banner-state__icon">
+      {% render 'icon-misc', icon: 'warning' %}
+    </span>
+
+    {% unless section.settings.error_heading == empty %}
+      <p class="text-h4 no-margin">{{ section.settings.error_heading }}</p>
+    {% endunless %}
+
+    {% unless section.settings.error_subheading == empty %}
+      <p class="newsletter-banner-state__subheading">{{ section.settings.error_subheading }}</p>
+    {% endunless %}
+  </div>
+
+  <span class="loader is-active"></span>
+</newsletter-banner>
+
+{% schema %}
+{
+  "name": "t:sections.newsletter-banner.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Sign up for the latest news, product launches, sales and more from Thomas Pink."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "By signing up to our newsletter you are agreeing to our <a href=\"/pages/privacy-and-cookies\" title=\"Privacy & Cookies\">Privacy Policy</a>."
+    },
+    {
+      "type": "header",
+      "content": "t:sections.newsletter-banner.settings.header__1.content"
+    },
+    {
+      "type": "text",
+      "id": "success_heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Welcome aboard! You're now part of our community."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "success_subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "You will receive an email to confirm your subscription shortly."
+    },
+    {
+      "type": "header",
+      "content": "t:sections.newsletter-banner.settings.header__2.content"
+    },
+    {
+      "type": "text",
+      "id": "error_heading",
+      "label": "t:presets.settings.heading.label",
+      "default": "Oops... Something went wrong."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "error_subheading",
+      "label": "t:presets.settings.subheading.label",
+      "default": "It looks like there was an error processing your request to join our newsletter. Please try again later or <a href=\"/pages/contact-us\" title=\"Contact Us\">contact support</a> for assistance."
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.newsletter-banner.name"
+    }
+  ]
+}
+{% endschema %}

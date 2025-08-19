@@ -1,0 +1,113 @@
+{% comment %}
+  Renders a carousel with products.
+
+  Accepts:
+  - heading: {String} The section heading.
+  - products: {Array} The list of products.
+  - slides_slot: {String} Custom slides content.
+  - slides_slot_count: {Number} The number of slides in the custom slot.
+  - slides_per_view_desktop: {Number} The slides per view count for desktop.
+  - top_border: {Boolean} Enables a separating border on the top.
+
+  Usage:
+  {% render 'product-slider', products: collection.products %}
+{% endcomment %}
+
+{% liquid
+  assign namespace = namespace | default: 'product-slider'
+  assign slide_count = 0
+  assign slides_per_view_desktop = slides_per_view_desktop | default: 4.45
+
+  if slides_slot and slides_slot_count
+    assign slide_count = slides_slot_count
+  elsif products
+    assign slide_count = products.count
+  endif
+
+  if section
+    assign namespace = namespace | append: '-' | append: section.id
+  endif
+%}
+
+{{ 'product-slider.css' | asset_url | stylesheet_tag }}
+
+<div class="product-slider {% if top_border %}product-slider--top-border{% endif %}">
+  <div class="product-slider__container container">
+    <div class="product-slider__header">
+      {% unless heading == empty %}
+        <p class="text-h4 no-margin">{{ heading }}</p>
+      {% endunless %}
+
+      <div class="product-slider__navigation">
+        {% unless slide_count <= 1 %}
+          <button
+            id="{{ namespace }}-prev"
+            class="product-slider__arrow button-reset"
+            type="button"
+            title="{{ 'accessibility.carousel.previous' | t }}"
+          >
+            {% render 'icon-direction', icon: 'arrow-left' %}
+          </button>
+        {% endunless %}
+
+        {% unless slide_count <= 1 %}
+          <span id="{{ namespace }}-pagination" class="product-slider__pagination text-subheading"></span>
+        {% endunless %}
+
+        {% unless slide_count <= 1 %}
+          <button
+            id="{{ namespace }}-next"
+            class="product-slider__arrow button-reset"
+            type="button"
+            title="{{ 'accessibility.carousel.next' | t }}"
+          >
+            {% render 'icon-direction', icon: 'arrow-right' %}
+          </button>
+        {% endunless %}
+      </div>
+    </div>
+
+    {% unless slide_count == 0 %}
+      <swiper-container
+        class="product-slider__slider"
+        slides-per-view="1.25"
+        navigation-prev-el="#{{ namespace }}-prev"
+        navigation-next-el="#{{ namespace }}-next"
+        pagination
+        pagination-type="fraction"
+        pagination-el="#{{ namespace }}-pagination"
+        scrollbar-el="#{{ namespace }}-scrollbar"
+        scrollbar-draggable
+        slides-offset-before="16"
+        slides-offset-after="16"
+        space-between="8"
+        breakpoints='
+          {
+            "768": {
+              "slidesPerView": 2.5
+            },
+            "1024": {
+              "slidesOffsetBefore": 32,
+              "slidesOffsetAfter": 32,
+              "slidesPerView": {{ slides_per_view_desktop }}
+            }
+          }
+        '
+      >
+        {% if slides_slot %}
+          {{ slides_slot }}
+        {% elsif products %}
+          {% for product in products limit: limit %}
+            <swiper-slide>
+              {% render 'product-card', product: product %}
+            </swiper-slide>
+          {% endfor %}
+        {% endif %}
+      </swiper-container>
+    {% endunless %}
+
+    {% unless slide_count <= 1 %}
+      <div id="{{ namespace }}-scrollbar" class="product-slider__scrollbar"></div>
+    {% endunless %}
+  </div>
+</div>

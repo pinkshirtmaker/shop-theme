@@ -1,0 +1,76 @@
+{{ 'store-information.css' | asset_url | stylesheet_tag }}
+
+<div class="container">
+  <div class="grid">
+    <div class="col xs12 m6 offset-m3 xl4 offset-xl4">
+      <div class="store-information__container">
+        {% for block in section.blocks %}
+          <div class="store-information__block">
+            {% unless block.settings.subheading == empty %}
+              <p class="text-subheading">{{ block.settings.subheading }}</p>
+            {% endunless %}
+
+            {% unless block.settings.heading == empty %}
+              <p class="text-h4 no-margin">{{ block.settings.heading | newline_to_br }}</p>
+            {% endunless %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.store-information.name",
+  "class": "section-margin",
+  "blocks": [
+    {
+      "type": "block",
+      "name": "t:presets.blocks.block.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "t:presets.settings.subheading.label",
+          "default": "Subheading"
+        },
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "t:presets.settings.heading.label",
+          "default": "Heading content with store information"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.store-information.name",
+      "blocks": [
+        {
+          "type": "block",
+          "settings": {
+            "subheading": "",
+            "heading": "Our new shop is now open on\nLondon's Jermyn Street."
+          }
+        },
+        {
+          "type": "block",
+          "settings": {
+            "subheading": "Address",
+            "heading": "106 Jermyn Street, London, SW1Y 6EE"
+          }
+        },
+        {
+          "type": "block",
+          "settings": {
+            "subheading": "Opening times",
+            "heading": "Monday to Saturday: 10:30am-6:30pm\nSunday: Closed"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

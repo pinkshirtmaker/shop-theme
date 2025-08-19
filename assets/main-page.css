@@ -1,0 +1,79 @@
+.main-page .breadcrumb {
+  margin-block: var(--spacing-24) var(--spacing-16);
+}
+
+.main-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  max-width: 453px;
+}
+
+.main-page__header .main-page__subcontent:not(:first-child) {
+  margin-block-start: var(--spacing-4);
+}
+
+.main-page__header .text-button:not(:first-child) {
+  margin-block-start: var(--spacing-12);
+}
+
+.main-page-block {
+  max-width: 684px;
+}
+
+.main-page-block:first-child {
+  margin-block-start: 0;
+}
+
+.main-page-block:last-child {
+  margin-block-end: 0;
+}
+
+.main-page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  margin-block: var(--spacing-24);
+}
+
+.main-page-heading :is(h1, h2, h3, h4, h5, h6) a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.main-page-heading:not(:has(.main-page-heading__subheading)) {
+  margin-block-end: var(--spacing-16);
+}
+
+.main-page-heading:not(:has(.main-page-heading__subheading)) + .main-page-heading {
+  margin-block-start: var(--spacing-16);
+}
+
+.main-page-button {
+  margin-block: var(--spacing-24);
+}
+
+.main-page-button .button {
+  padding-inline: var(--spacing-56);
+  width: 100%;
+}
+
+.main-page-image {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  margin-block: var(--spacing-32);
+}
+
+@media (min-width: 576px) {
+  .main-page-button .button {
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-page .breadcrumb {
+    margin-block: var(--spacing-32);
+  }
+}

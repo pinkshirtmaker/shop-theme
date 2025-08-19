@@ -1,0 +1,31 @@
+<section>
+  <div class="container">
+    <div class="grid no-gutter margin">
+      <div class="col xs12">
+        <h1 class="text-h3">{{ 'sections.search_hero.title' | t }}</h1>
+
+        <form action="{{ routes.search_url }}">
+          <div class="form-group form-group--inline">
+            <div class="form-group__field styled-field">
+              <label for="{{ section.id | append: '-search' }}">
+                {{ 'sections.search_hero.search' | t }}
+              </label>
+
+              <input
+                id="{{ section.id | append: '-search' }}"
+                name="q"
+                value="{{ search.terms | escape }}"
+                type="search"
+                placeholder="{{ 'sections.search_hero.search' | t }}"
+              >
+            </div>
+
+            <button class="button button-reset">
+              {{ 'sections.search_hero.submit' | t }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

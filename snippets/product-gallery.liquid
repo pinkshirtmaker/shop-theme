@@ -1,0 +1,239 @@
+{% comment %}
+  Renders a slider to display product media.
+  - Note: The stylesheet is loaded in theme-styles.liquid to improve dynamic loading and layout shifts.
+
+  Accepts:
+  - product: {Object} The product object.
+  - selected_variant: {Object} The default variant.
+  - aspect_ratio: {String} Optional aspect ratio.
+  - background_color: {String} Optional background color.
+
+  Usage:
+  {% render 'product-gallery' %}
+{% endcomment %}
+
+{% liquid
+  if product.media.size > 1
+    unless selected_variant
+      assign selected_variant = product.selected_or_first_available_variant
+    endunless
+  endif
+
+  assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+  assign primary_image = selected_variant.featured_image | default: product.featured_image
+
+  assign namespace = 'product-gallery-' | append: product.handle
+
+  if section
+    assign namespace = namespace | append: '-' | append: section.id
+  endif
+
+  assign zoom_gallery_namespace = namespace | append: '-zoom'
+
+  assign media_ids = ''
+
+  for media in product.media
+    unless media.id == selected_variant.featured_media.id or variant_images contains media.src or media.id == product.featured_media.id
+      if media_ids == ''
+        assign media_ids = media.id
+      else
+        assign media_ids = media_ids | append: ',' | append: media.id
+      endif
+    endunless
+  endfor
+
+  assign media_ids = media_ids | split: ','
+%}
+
+{% capture image_container_styles %}
+  {% unless aspect_ratio == empty %}--aspect-ratio: {{ aspect_ratio }};{% endunless %}
+  {% unless background_color == blank %}--background-color: {{ background_color }};{% endunless %}
+{% endcapture %}
+
+{% capture zoom_cursor %}
+  <custom-cursor class="product-gallery__zoom-cursor">
+    {%- render 'icon-misc', icon: 'plus' -%}
+    {%- render 'icon-misc', icon: 'minus' -%}
+  </custom-cursor>
+{% endcapture %}
+
+<product-gallery id="{{ namespace }}" class="product-gallery">
+  <div class="product-gallery__container main-product__gallery">
+    {% render 'product-gallery-sidebar', namespace: namespace, primary_image: primary_image, media_ids: media_ids %}
+
+    <a class="product-gallery__main" href="{{ product.url }}">
+      {% if product.metafields.custom.badge %}
+        {% render 'badge',
+          title: product.metafields.custom.badge.value.title,
+          background_color: product.metafields.custom.badge.value.background_color,
+          class: 'product-gallery__badge'
+        %}
+      {% endif %}
+
+      <button
+        id="{{ namespace }}-prev"
+        class="product-gallery__arrow button-reset"
+        type="button"
+        title="{{ 'accessibility.carousel.previous' | t }}"
+      >
+        {% render 'icon-direction', icon: 'arrow-left' %}
+      </button>
+
+      <div class="product-gallery__slider">
+        <div id="{{ namespace }}-pagination" class="product-gallery__pagination text-lead"></div>
+
+        <swiper-container
+          auto-height
+          loop
+          thumbs-swiper="#{{ namespace }}-thumbnails"
+          navigation-prev-el="#{{ namespace }}-prev"
+          navigation-next-el="#{{ namespace }}-next"
+          pagination-type="fraction"
+          pagination-el="#{{ namespace }}-pagination"
+          scrollbar-el="#{{ namespace }}-scrollbar"
+          scrollbar-draggable
+          slides-per-view="auto"
+          data-target="product-gallery.main-slider"
+        >
+          {% if primary_image %}
+            <swiper-slide>
+              <div
+                class="product-gallery__image-container"
+                style="{{ image_container_styles }}"
+                data-toggle="{{ zoom_gallery_namespace }}"
+                data-target="product-gallery.zoom-toggle"
+              >
+                {{ primary_image | image_url: width: 1200 | image_tag: preload: true, class: 'product-gallery__image' }}
+                {{ zoom_cursor }}
+              </div>
+            </swiper-slide>
+          {% endif %}
+
+          {% for media_id in media_ids %}
+            {% liquid
+              assign media_id_int = media_id | times: 1
+              assign media = product.media | where: 'id', media_id_int | first
+            %}
+
+            <swiper-slide>
+              <div
+                class="product-gallery__image-container"
+                style="{{ image_container_styles }}"
+                data-toggle="{{ zoom_gallery_namespace }}"
+                data-target="product-gallery.zoom-toggle"
+              >
+                {% if media.media_type == 'image' %}
+                  {{ media | image_url: width: 1200 | image_tag: class: 'product-gallery__image', loading: 'lazy' }}
+
+                {% else %}
+                  {{ media | media_tag: image_size: '1200x', autoplay: true, loop: true, muted: true, controls: false }}
+                {% endif %}
+
+                {{ zoom_cursor }}
+              </div>
+            </swiper-slide>
+          {% endfor %}
+        </swiper-container>
+      </div>
+
+      <button
+        id="{{ namespace }}-next"
+        class="product-gallery__arrow product-gallery__arrow--right button-reset"
+        type="button"
+        title="{{ 'accessibility.carousel.next' | t }}"
+      >
+        {% render 'icon-direction', icon: 'arrow-right' %}
+      </button>
+
+      <div id="{{ namespace }}-scrollbar" class="product-gallery__scrollbar"></div>
+    </a>
+  </div>
+
+  <toggle-element
+    data-namespace="{{ zoom_gallery_namespace }}"
+    class="product-gallery-zoom"
+    data-target="product-gallery.zoom-modal"
+  >
+    <button
+      class="product-gallery-zoom__close button-reset"
+      type="button"
+      data-toggle="{{ zoom_gallery_namespace }}"
+      title="Close zoom gallery"
+    >
+      {% render 'icon-misc', icon: 'close' %}
+    </button>
+
+    {% render 'product-gallery-sidebar',
+      namespace: zoom_gallery_namespace,
+      primary_image: primary_image,
+      media_ids: media_ids
+    %}
+
+    <div class="product-gallery-zoom__main">
+      <div class="product-gallery-zoom__slider">
+        <button
+          id="{{ zoom_gallery_namespace }}-prev"
+          class="product-gallery__arrow button-reset"
+          type="button"
+          title="{{ 'accessibility.carousel.previous' | t }}"
+        >
+          {% render 'icon-direction', icon: 'arrow-left' %}
+        </button>
+
+        <swiper-container
+          auto-height
+          loop
+          thumbs-swiper="#{{ zoom_gallery_namespace }}-thumbnails"
+          pagination-type="fraction"
+          pagination-el="#{{ zoom_gallery_namespace }}-pagination"
+          navigation-prev-el="#{{ zoom_gallery_namespace }}-prev"
+          navigation-next-el="#{{ zoom_gallery_namespace }}-next"
+          slides-per-view="auto"
+          data-target="product-gallery.zoom-slider"
+        >
+          {% if primary_image %}
+            <swiper-slide>
+              <div
+                class="product-gallery__image-container"
+                style="{{ image_container_styles }}"
+                data-target="product-gallery.zoom-container"
+              >
+                {{ primary_image | image_url: width: 2400 | image_tag: class: 'product-gallery__image' }}
+                {{ zoom_cursor }}
+              </div>
+            </swiper-slide>
+          {% endif %}
+
+          {% for media_id in media_ids %}
+            {% liquid
+              assign media_id_int = media_id | times: 1
+              assign media = product.media | where: 'id', media_id_int | first
+            %}
+
+            <swiper-slide>
+              <div
+                class="product-gallery__image-container"
+                style="{{ image_container_styles }}"
+                data-target="product-gallery.zoom-container"
+              >
+                {{ media | image_url: width: 2400 | image_tag: class: 'product-gallery__image' }}
+                {{ zoom_cursor }}
+              </div>
+            </swiper-slide>
+          {% endfor %}
+        </swiper-container>
+
+        <button
+          id="{{ zoom_gallery_namespace }}-next"
+          class="product-gallery__arrow product-gallery__arrow--right button-reset"
+          type="button"
+          title="{{ 'accessibility.carousel.next' | t }}"
+        >
+          {% render 'icon-direction', icon: 'arrow-right' %}
+        </button>
+      </div>
+
+      <div id="{{ zoom_gallery_namespace }}-pagination" class="product-gallery__pagination text-lead"></div>
+    </div>
+  </toggle-element>
+</product-gallery>

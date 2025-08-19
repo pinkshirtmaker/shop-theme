@@ -1,0 +1,354 @@
+{% comment %}
+  Renders a filter and sorting form.
+
+  Accepts:
+  - attributes: {String} Optional attributes.
+  - action: {String} The action to run (`emit` will emit a custom event, `manual` will do nothing)
+  - class: {String} Optional classes.
+
+  Usage:
+  {% render 'filter-form' %}
+{% endcomment %}
+
+{% assign resource = search | default: collection | default: false %}
+
+<script src="{{ 'filter-form.js' | asset_url }}" type="module" defer></script>
+
+{% if resource %}
+  {% liquid
+    assign filter_reset_url = false
+    assign has_active_filters = false
+    assign active_filter_count = 0
+    assign sort_selected = resource.sort_by
+    assign sort_selected_name = null
+    assign view_results_text = 'filter_form.view_products' | t
+
+    if sort_selected
+      for sort_option in resource.sort_options
+        if sort_option.value == sort_selected
+          assign sort_selected_name = sort_option.name
+        endif
+      endfor
+    endif
+
+    for filter in resource.filters
+      case filter.type
+        when 'price_range'
+          if filter.min_value.value or filter.max_value.value
+            assign has_active_filters = true
+            assign active_filter_count = active_filter_count | plus: 1
+          endif
+
+        else
+          if filter.active_values.size >= 1
+            assign has_active_filters = true
+            assign active_filter_count = active_filter_count | plus: filter.active_values.size
+          endif
+      endcase
+    endfor
+
+    if collection
+      assign filter_reset_url = collection.url
+
+      if collection.sort_by != ''
+        assign filter_reset_url = filter_reset_url | append: '?sort_by=' | append: collection.sort_by
+      endif
+
+    elsif search
+      assign filter_reset_url = routes.search_url
+      assign search_params = ''
+      assign view_results_text = 'filter_form.view_results' | t
+
+      if search.sort_by and search.sort_by != search.default_sort_by
+        assign search_params = search_params | append: 'sort_by=' | append: search.sort_by | append: ', '
+      endif
+
+      if search.performed
+        assign search_params = search_params | append: 'q=' | append: search.terms | append: ', '
+      endif
+
+      unless search_params == ''
+        assign filter_reset_url = search_params | split: ', ' | join: '&' | prepend: '?' | prepend: filter_reset_url
+      endunless
+    endif
+  %}
+
+  {% capture close_button %}
+    <button class="filter-form__close button-reset button" type="button" data-target="filter-form.close">
+      {{ view_results_text }} ({{ resource.products_count | default: resource.results_count }})
+    </button>
+  {% endcapture %}
+
+  <filter-form
+    class="filter-form {{ class }}"
+    data-action="{{ action }}"
+    data-default-sort-by="{{ resource.default_sort_by }}"
+    {{ attributes }}
+  >
+    <form class="filter-form__form" data-target="filter-form.form">
+      {% if resource.terms %}
+        <input
+          name="q"
+          type="hidden"
+          value="{{ resource.terms | escape }}"
+        >
+      {% endif %}
+
+      {% if resource.filters.size >= 1 or resource.sort_options.size >= 1 %}
+        <button class="filter-form__toggle text-subheading button-reset" type="button" data-target="filter-form.toggle">
+          Filter
+        </button>
+
+        <div class="filter-form__filters" data-target="filter-form.filters">
+          <div class="filter-form__header">
+            <h2 class="filter-form__title text-body no-margin">{{ 'filter_form.title' | t }}</h2>
+
+            {% if has_active_filters %}
+              <a class="filter-form__clear text-button" href="{{ filter_reset_url }}">
+                {{ 'filter_form.clear_all' | t }}
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="filter-form__filters-list hide-scrollbar">
+            {% for filter in resource.filters %}
+              <details class="filter-form__filter disclosure-reset" data-target="filter-form.filter">
+                <summary class="text-subheading">
+                  <span class="filter-form__filter-label">
+                    {{- filter.label -}}
+                    {%- if filter.active_values %}({{ filter.active_values.size }}){% endif -%}
+                  </span>
+
+                  {% if filter.active_values -%}
+                    <span class="filter-form__filter-preview text-body-small">
+                      {% for value in filter.active_values -%}
+                        {{- value.label -}}
+                        {%- unless forloop.last %}, {% endunless -%}
+                      {%- endfor %}
+                    </span>
+                  {%- endif %}
+
+                  {% render 'icon-direction', icon: 'chevron-right' %}
+                </summary>
+
+                <div class="filter-form__dropdown">
+                  <div class="filter-form__header">
+                    <div class="filter-form__title">
+                      <button
+                        class="button-reset flex"
+                        type="button"
+                        title="Back to all filters"
+                        data-target="filter-form.back"
+                      >
+                        {% render 'icon-direction', icon: 'chevron-left' %}
+                      </button>
+
+                      {{ filter.label }}
+                    </div>
+
+                    {% unless filter.active_values.size == 0 %}
+                      <a class="text-subheading text-underline" href="{{ filter.url_to_remove }}">
+                        {{- 'filter_form.clear_all' | t -}}
+                      </a>
+                    {% endunless %}
+                  </div>
+
+                  {% case filter.type %}
+                    {% when 'boolean', 'list' %}
+                      <ul class="filter-form__list list-reset hide-scrollbar">
+                        {% for value in filter.values %}
+                          <li class="filter-form__option">
+                            <label class="text-body" for="{{ filter.param_name }}-{{ value.value }}">
+                              {{ value.label }} ({{ value.count }})
+                            </label>
+
+                            <input
+                              id="{{ filter.param_name }}-{{ value.value }}"
+                              name="{{ filter.param_name }}"
+                              type="checkbox"
+                              value="{{ value.value }}"
+                              {% if value.active %}
+                                checked
+                              {% endif %}
+                              {% if value.count == 0 and value.active == false %}
+                                disabled
+                              {% endif %}
+                              data-target="filter-form.input"
+                            >
+                          </li>
+                        {% endfor %}
+                      </ul>
+
+                    {% when 'price_range' %}
+                      <div class="filter-form__price-range form-group form-group--inline">
+                        <div class="form-group__field">
+                          <label for="{{ filter.min_value.param_name }}">
+                            {{ 'filter_form.price_range.from' | t }} ({{ localization.country.currency.symbol }})
+                          </label>
+
+                          <input
+                            id="{{ filter.min_value.param_name }}"
+                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            min="0"
+                            name="{{ filter.min_value.param_name }}"
+                            type="number"
+                            {% if filter.min_value.value %}
+                              value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                            {% endif %}
+                            data-target="filter-form.input"
+                          >
+                        </div>
+
+                        <div class="form-group__field">
+                          <label for="{{ filter.max_value.param_name }}">
+                            {{ 'filter_form.price_range.to' | t }} ({{ localization.country.currency.symbol }})
+                          </label>
+
+                          <input
+                            id="{{ filter.max_value.param_name }}"
+                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            min="0"
+                            name="{{ filter.max_value.param_name }}"
+                            type="number"
+                            {% if filter.max_value.value %}
+                              value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                            {% endif %}
+                            data-target="filter-form.input"
+                          >
+                        </div>
+                      </div>
+                  {% endcase %}
+
+                  {{ close_button }}
+                </div>
+              </details>
+            {% endfor %}
+          </div>
+
+          {{ close_button }}
+        </div>
+      {% endif %}
+
+      <div class="filter-form-grid">
+        <button
+          class="button-reset filter-form-grid__option text-subheading is-active"
+          data-target="filter-form.grid-option"
+          data-option="option-1"
+          type="button"
+        >
+          {{ 'filter_form.grid' | t }}
+        </button>
+
+        <button
+          class="button-reset filter-form-grid__option text-subheading"
+          data-target="filter-form.grid-option"
+          data-option="option-2"
+          type="button"
+        >
+          {{ 'filter_form.grid' | t }}
+        </button>
+      </div>
+
+      {% if resource.sort_options.size >= 1 %}
+        <button
+          class="filter-form__sort-toggle text-subheading button-reset"
+          type="button"
+          data-target="filter-form.sort-toggle"
+        >
+          <span class="filter-form__sort-toggle-label">
+            {{- 'filter_form.sort_by' | t -}}
+            {%- if sort_selected_name -%}
+              <span class="filter-form__sort-toggle-selected">: {{ sort_selected_name }}</span>
+            {%- endif -%}
+          </span>
+          {% render 'icon-direction', icon: 'chevron-down' %}
+        </button>
+
+        <div class="filter-form-sort" data-target="filter-form.sort-list">
+          <div class="filter-form__header">
+            <p class="filter-form__title text-body no-margin">{{ 'filter_form.sort_by' | t }}</p>
+          </div>
+
+          <div class="filter-form-sort__list hide-scrollbar">
+            {% for sort_option in resource.sort_options %}
+              <button
+                class="filter-form-sort__option text-subheading text-body-desktop button-reset {% if sort_selected == sort_option.value %}is-active{% endif %}"
+                type="button"
+                data-value="{{ sort_option.value }}"
+                data-target="filter-form.sort-option"
+              >
+                {{ sort_option.name -}}
+                {% render 'icon-misc', icon: 'tick' %}
+              </button>
+            {% endfor %}
+          </div>
+
+          {{ close_button }}
+        </div>
+
+        <label class="visually-hidden" for="sort-by">{{ 'filter_form.sort_by' | t }}</label>
+
+        <select
+          id="sort-by"
+          class="filter-form__sort text-body-small no-margin"
+          name="sort_by"
+          data-target="filter-form.input"
+        >
+          {% for sort_option in resource.sort_options %}
+            <option
+              value="{{ sort_option.value | escape }}"
+              {% if sort_selected == sort_option.value %}
+                selected
+              {% endif %}
+            >
+              {{ sort_option.name }}
+            </option>
+          {% endfor %}
+        </select>
+      {% endif %}
+    </form>
+
+    {% if has_active_filters %}
+      <div class="filter-form__active-row">
+        <p class="filter-form__count">
+          {% if products_count == 1 %}
+            {{ 'sections.product_listing.active_filter_count_one_html' | t: count: products_count }}
+          {% else %}
+            {{ 'sections.product_listing.active_filter_count_many_html' | t: count: products_count }}
+          {% endif %}
+        </p>
+
+        <div class="filter-form__active-filters">
+          {% for filter in resource.filters %}
+            {% case filter.type %}
+              {% when 'price_range' %}
+                {% if filter.min_value.value or filter.max_value.value %}
+                  {% capture label %}
+                    {{ filter.min_value.value | default: 0 | money }} - {{ filter.max_value.value | default: filter.range_max | money }}
+                  {% endcapture %}
+
+                  <a class="filter-form__active-filter button-reset" href="{{ filter.url_to_remove }}">
+                    {{- label -}}
+                    {% render 'icon-misc', icon: 'close' %}
+                  </a>
+                {% endif %}
+              {% else %}
+                {% unless filter.active_values.size == 0 %}
+                  {% for active_value in filter.active_values %}
+                    <a class="filter-form__active-filter button-reset" href="{{ active_value.url_to_remove }}">
+                      {{- active_value.label -}}
+                      {% render 'icon-misc', icon: 'close' %}
+                    </a>
+                  {% endfor %}
+                {% endunless %}
+            {% endcase %}
+          {% endfor %}
+
+          <a class="text-subheading text-underline" href="{{ filter_reset_url }}">
+            {{ 'filter_form.clear_all' | t }}
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </filter-form>
+{% endif %}
