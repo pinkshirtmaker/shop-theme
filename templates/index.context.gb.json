@@ -12,5 +12,13 @@
   "context": {
     "market": "gb"
   },
-  "sections": {}
+  "sections": {
+    "hero_banner_bF7nWP": {
+      "settings": {
+        "image_desktop": "shopify://shop_images/Thomas-Pink-Summer-Sale-2025-50-OFF.webp",
+        "image": "shopify://shop_images/Thomas-Pink-Summer-Sale-2025-50-OFF.webp"
+      },
+      "blocks": {}
+    }
+  }
 }
