@@ -1,1 +1,159 @@
-{"type":"header","name":"t:section_groups.header.name","sections":{"header":{"type":"header","blocks":{"dropdown_bmrY9B":{"type":"dropdown","settings":{"menu_item_position":2,"hide_shop_all":false,"swatch_links_heading":"","swatch_links_list":"","quick_links_heading":"","quick_links_list":"","banner_1_image":"shopify:\/\/shop_images\/mcs2a1f0301s-alpox001-w1x-4.webp","banner_1_caption":"Shop Oxford Shirts","banner_1_url":"shopify:\/\/collections\/mens-oxford-shirts","banner_2_image":"shopify:\/\/shop_images\/msn2a1v0101x-tgpme002-l3x-4.webp","banner_2_caption":"Shop Gilets","banner_2_url":"shopify:\/\/collections\/mens-gilets","banner_3_caption":"","banner_3_url":"","footer_content":"","footer_link_label":"","footer_link_url":""}},"dropdown_wwbKi6":{"type":"dropdown","settings":{"menu_item_position":3,"hide_shop_all":false,"swatch_links_heading":"","swatch_links_list":"","quick_links_heading":"","quick_links_list":"","banner_1_image":"shopify:\/\/shop_images\/Shop-Linen-Twill-Tailoring-NAV-BAR.webp","banner_1_caption":"Shop Tailoring","banner_1_url":"shopify:\/\/collections\/mens-tailoring","banner_2_image":"shopify:\/\/shop_images\/msn2a1s0202x-tgpme001-k3x-3.webp","banner_2_caption":"Shop Knitwear","banner_2_url":"shopify:\/\/collections\/mens-knitwear","banner_3_caption":"","banner_3_url":"","footer_content":"","footer_link_label":"","footer_link_url":""}},"dropdown_6Pzcfj":{"type":"dropdown","settings":{"menu_item_position":4,"hide_shop_all":false,"swatch_links_heading":"","swatch_links_list":"","quick_links_heading":"Quick links","quick_links_list":"","banner_1_caption":"","banner_1_url":"","banner_2_caption":"","banner_2_url":"","banner_3_caption":"","banner_3_url":"","footer_content":"","footer_link_label":"","footer_link_url":""}},"dropdown_ChbXrK":{"type":"dropdown","disabled":true,"settings":{"menu_item_position":5,"hide_shop_all":true,"swatch_links_heading":"","swatch_links_list":"","quick_links_heading":"Quick links","quick_links_list":"discover-quick-links","banner_1_image":"shopify:\/\/shop_images\/8e7c19a66b2c0ea1699c753c45f15d80.png","banner_1_caption":"Formal shirts","banner_1_url":"shopify:\/\/collections\/all","banner_2_image":"shopify:\/\/shop_images\/e8e98cf719e1e1473e8218d7fd403712.jpg","banner_2_caption":"Image caption","banner_2_url":"shopify:\/\/collections\/all","banner_3_image":"shopify:\/\/shop_images\/d367f0a13f00af375001a09ac92e556d.jpg","banner_3_caption":"Image caption","banner_3_url":"shopify:\/\/collections\/all","footer_content":"Visit us in store – 106 Jermyn Street, London, SW1Y 6EE","footer_link_label":"Contact us","footer_link_url":"shopify:\/\/pages\/contact-us"}}},"block_order":["dropdown_bmrY9B","dropdown_wwbKi6","dropdown_6Pzcfj","dropdown_ChbXrK"],"settings":{"logo":"shopify:\/\/shop_images\/Thomas_Pink_Logo-04_1.svg","transparent_logo":"shopify:\/\/shop_images\/image_15.svg","blog_logo":"shopify:\/\/shop_images\/blog-logo.svg","logo_width":130,"menu":"main-menu","wishlist_url":"\/apps\/wishlist","transparent_on_index":false,"announcement_bar_heading":"<p><a href=\"\/collections\/mens-essential-shirts\" title=\"Men's Essential Shirts\">SHOP ESSENTIAL SHIRTS<\/a><\/p>","announcement_bar_subheading":"","announcement_bar_background_color":"#be8383","announcement_bar_text_color":"#ffffff","announcement_bar_link_text":"Flagship Store","announcement_bar_link_url":"shopify:\/\/pages\/stores"}},"cart-drawer":{"type":"cart-drawer","blocks":{"empty_cart_block_EGkUC9":{"type":"empty_cart_block","settings":{"image":"shopify:\/\/shop_images\/Thomas-Pink-Mobile-Homepage-Transition.webp","label":"SHOP OXFORD SHIRTS","url":"shopify:\/\/collections\/mens-oxford-shirts"}},"empty_cart_block_AFDYwW":{"type":"empty_cart_block","settings":{"image":"shopify:\/\/shop_images\/20230922_PINK_SHOT_07_0010_24d03993-6c10-4263-8cba-5cecdc3f0cd9.jpg","label":"Shop Essential Shirts","url":"shopify:\/\/collections\/mens-essential-shirts"}}},"block_order":["empty_cart_block_EGkUC9","empty_cart_block_AFDYwW"],"settings":{"empty_cart_heading":"Your shopping cart is empty. <em>Explore the below...<\/em>"}}},"order":["header","cart-drawer"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:section_groups.header.name",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "dropdown_bmrY9B": {
+          "type": "dropdown",
+          "settings": {
+            "menu_item_position": 2,
+            "hide_shop_all": false,
+            "swatch_links_heading": "",
+            "swatch_links_list": "",
+            "quick_links_heading": "",
+            "quick_links_list": "",
+            "banner_1_image": "shopify://shop_images/mcs2a1f0301s-alpox001-w1x-4.webp",
+            "banner_1_caption": "Shop Oxford Shirts",
+            "banner_1_url": "shopify://collections/mens-oxford-shirts",
+            "banner_2_image": "shopify://shop_images/msn2a1v0101x-tgpme002-l3x-4.webp",
+            "banner_2_caption": "Shop Gilets",
+            "banner_2_url": "shopify://collections/mens-gilets",
+            "banner_3_caption": "",
+            "banner_3_url": "",
+            "footer_content": "",
+            "footer_link_label": "",
+            "footer_link_url": ""
+          }
+        },
+        "dropdown_wwbKi6": {
+          "type": "dropdown",
+          "settings": {
+            "menu_item_position": 3,
+            "hide_shop_all": false,
+            "swatch_links_heading": "",
+            "swatch_links_list": "",
+            "quick_links_heading": "",
+            "quick_links_list": "",
+            "banner_1_caption": "Shop Tailoring",
+            "banner_1_url": "shopify://collections/mens-tailoring",
+            "banner_2_image": "shopify://shop_images/msn2a1s0202x-tgpme001-k3x-3.webp",
+            "banner_2_caption": "Shop Knitwear",
+            "banner_2_url": "shopify://collections/mens-knitwear",
+            "banner_3_caption": "",
+            "banner_3_url": "",
+            "footer_content": "",
+            "footer_link_label": "",
+            "footer_link_url": ""
+          }
+        },
+        "dropdown_6Pzcfj": {
+          "type": "dropdown",
+          "settings": {
+            "menu_item_position": 4,
+            "hide_shop_all": false,
+            "swatch_links_heading": "",
+            "swatch_links_list": "",
+            "quick_links_heading": "Quick links",
+            "quick_links_list": "",
+            "banner_1_caption": "",
+            "banner_1_url": "",
+            "banner_2_caption": "",
+            "banner_2_url": "",
+            "banner_3_caption": "",
+            "banner_3_url": "",
+            "footer_content": "",
+            "footer_link_label": "",
+            "footer_link_url": ""
+          }
+        },
+        "dropdown_ChbXrK": {
+          "type": "dropdown",
+          "disabled": true,
+          "settings": {
+            "menu_item_position": 5,
+            "hide_shop_all": true,
+            "swatch_links_heading": "",
+            "swatch_links_list": "",
+            "quick_links_heading": "Quick links",
+            "quick_links_list": "",
+            "banner_1_image": "shopify://shop_images/8e7c19a66b2c0ea1699c753c45f15d80.png",
+            "banner_1_caption": "Formal shirts",
+            "banner_1_url": "shopify://collections/all",
+            "banner_2_image": "shopify://shop_images/e8e98cf719e1e1473e8218d7fd403712.jpg",
+            "banner_2_caption": "Image caption",
+            "banner_2_url": "shopify://collections/all",
+            "banner_3_image": "shopify://shop_images/d367f0a13f00af375001a09ac92e556d.jpg",
+            "banner_3_caption": "Image caption",
+            "banner_3_url": "shopify://collections/all",
+            "footer_content": "Visit us in store – 106 Jermyn Street, London, SW1Y 6EE",
+            "footer_link_label": "Contact us",
+            "footer_link_url": "shopify://pages/contact-us"
+          }
+        }
+      },
+      "block_order": [
+        "dropdown_bmrY9B",
+        "dropdown_wwbKi6",
+        "dropdown_6Pzcfj",
+        "dropdown_ChbXrK"
+      ],
+      "settings": {
+        "logo": "shopify://shop_images/Thomas_Pink_Logo-04_1.svg",
+        "transparent_logo": "shopify://shop_images/image_15.svg",
+        "blog_logo": "shopify://shop_images/blog-logo.svg",
+        "logo_width": 130,
+        "menu": "main-menu-full-price",
+        "wishlist_url": "/apps/wishlist",
+        "transparent_on_index": false,
+        "announcement_bar_heading": "<p><a href=\"/collections/mens-essential-shirts\" title=\"Men's Essential Shirts\">SHOP ESSENTIAL SHIRTS</a></p>",
+        "announcement_bar_subheading": "",
+        "announcement_bar_background_color": "#be8383",
+        "announcement_bar_text_color": "#ffffff",
+        "announcement_bar_link_text": "Flagship Store",
+        "announcement_bar_link_url": "shopify://pages/stores"
+      }
+    },
+    "cart-drawer": {
+      "type": "cart-drawer",
+      "blocks": {
+        "empty_cart_block_EGkUC9": {
+          "type": "empty_cart_block",
+          "settings": {
+            "label": "SHOP OXFORD SHIRTS",
+            "url": "shopify://collections/mens-oxford-shirts"
+          }
+        },
+        "empty_cart_block_AFDYwW": {
+          "type": "empty_cart_block",
+          "settings": {
+            "image": "shopify://shop_images/20230922_PINK_SHOT_07_0010_24d03993-6c10-4263-8cba-5cecdc3f0cd9.jpg",
+            "label": "Shop Essential Shirts",
+            "url": "shopify://collections/mens-essential-shirts"
+          }
+        }
+      },
+      "block_order": [
+        "empty_cart_block_EGkUC9",
+        "empty_cart_block_AFDYwW"
+      ],
+      "settings": {
+        "empty_cart_heading": "Your shopping cart is empty. <em>Explore the below...</em>"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "cart-drawer"
+  ]
+}
