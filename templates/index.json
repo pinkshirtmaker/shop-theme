@@ -126,37 +126,38 @@
     "collection_blocks_wnkcBy": {
       "type": "collection-blocks",
       "blocks": {
+        "block_RT6En4": {
+          "type": "block",
+          "settings": {
+            "heading": "Tailoring",
+            "button_label": "Shop now",
+            "url": "shopify://collections/mens-tailoring",
+            "text_color": "",
+            "image": "shopify://shop_images/msa2w5u0201x-rdcwo002-d2n-4.webp",
+            "image_position": "center",
+            "image_overlay_opacity": 5,
+            "hover_image_position": "center",
+            "hover_image_overlay_opacity": 15
+          }
+        },
         "block_TH7Jft": {
           "type": "block",
           "settings": {
-            "heading": "Double Cuff Shirts",
+            "heading": "Outerwear",
             "button_label": "Shop now",
-            "url": "shopify://collections/mens-double-cuff-shirts",
+            "url": "shopify://collections/mens-coats-and-jackets",
             "text_color": "",
+            "image": "shopify://shop_images/mcw2p3t04lx-olpot001-l3x-4.webp",
             "image_position": "center",
             "image_overlay_opacity": 5,
             "hover_image_position": "bottom",
             "hover_image_overlay_opacity": 15
           }
-        },
-        "block_RT6En4": {
-          "type": "block",
-          "settings": {
-            "heading": "Accessories",
-            "button_label": "Shop now",
-            "url": "shopify://collections/mens-accessories",
-            "text_color": "",
-            "image": "shopify://shop_images/asc2w2l0101x-vxpss010-v2x-2.jpg",
-            "image_position": "top",
-            "image_overlay_opacity": 5,
-            "hover_image_position": "center",
-            "hover_image_overlay_opacity": 15
-          }
         }
       },
       "block_order": [
-        "block_TH7Jft",
-        "block_RT6En4"
+        "block_RT6En4",
+        "block_TH7Jft"
       ],
       "settings": {}
     },
