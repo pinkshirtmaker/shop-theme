@@ -175,6 +175,18 @@
           "style_colors_cta_button": "#C57372",
           "style_colors_text": "#000"
         }
+      },
+      "8801246016214166623": {
+        "type": "shopify://apps/readabler/blocks/readabler/ba3d83fb-b4aa-4200-8b45-d325664f0025",
+        "disabled": false,
+        "settings": {
+          "cssBg": "#ffffff",
+          "cssText": "#333",
+          "cssColor": "rgba(33, 150, 243, 1)",
+          "cssBgDark": "#16191b",
+          "cssTextDark": "#deeffd",
+          "cssColorDark": "rgba(33, 150, 243, 1)"
+        }
       }
     }
   },
