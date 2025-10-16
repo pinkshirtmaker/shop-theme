@@ -38,16 +38,16 @@
         "text_color": "#ffffff",
         "text_color_invert": "#000000",
         "background_color": "",
-        "content_position": "middle-center",
+        "content_position": "bottom-center",
         "text_alignment": "center",
         "content_position_desktop": "bottom-left",
         "text_alignment_desktop": "left",
         "image": "shopify://shop_images/MSS2A2F02C2D-ALPCT040-W1X-1a.jpg",
         "image_desktop": "shopify://shop_images/MSS2A2F02C2D-ALPCT040-W1X-1a.jpg",
         "media_position": "center",
-        "media_overlay_opacity": 0,
+        "media_overlay_opacity": 10,
         "height": 550,
-        "height_desktop": 678
+        "height_desktop": 800
       }
     },
     "quick_links_Fq6DjM": {
