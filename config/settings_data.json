@@ -178,14 +178,26 @@
       },
       "8801246016214166623": {
         "type": "shopify://apps/readabler/blocks/readabler/ba3d83fb-b4aa-4200-8b45-d325664f0025",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "cssBg": "#ffffff",
-          "cssText": "#333",
-          "cssColor": "rgba(33, 150, 243, 1)",
+          "cssText": "#333333",
+          "cssColor": "#2196f3",
           "cssBgDark": "#16191b",
           "cssTextDark": "#deeffd",
-          "cssColorDark": "rgba(33, 150, 243, 1)"
+          "cssColorDark": "#2196f3"
+        }
+      },
+      "2783554875815837874": {
+        "type": "shopify://apps/sea-accessibility-ada-wcag/blocks/app-embed/0ab9368b-426b-42b4-93ea-63d9c8e88707",
+        "disabled": false,
+        "settings": {}
+      },
+      "1530068250781986104": {
+        "type": "shopify://apps/fbp-fast-bundle/blocks/fast_bundle/9e87fbe2-9041-4c23-acf5-322413994cef",
+        "disabled": false,
+        "settings": {
+          "home": false
         }
       }
     }
