@@ -193,9 +193,14 @@
         "disabled": false,
         "settings": {}
       },
+      "8605505498557855500": {
+        "type": "shopify://apps/bogos-io-free-gift/blocks/app-embed/0432bba6-720a-4e95-be5a-b868386f7aa6",
+        "disabled": false,
+        "settings": {}
+      },
       "1530068250781986104": {
         "type": "shopify://apps/fbp-fast-bundle/blocks/fast_bundle/9e87fbe2-9041-4c23-acf5-322413994cef",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "home": false
         }
