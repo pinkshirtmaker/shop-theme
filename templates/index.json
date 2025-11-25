@@ -15,14 +15,14 @@
         "button_CpHULA": {
           "type": "button",
           "settings": {
-            "label": "Shop All Shirts",
+            "label": "Shop All Sale",
             "url": "shopify://collections/mens-shirts"
           }
         },
         "button_6wwFex": {
           "type": "button",
           "settings": {
-            "label": "Shop Formal Shirts",
+            "label": "Shop Sale Shirts",
             "url": "shopify://collections/mens-formal-shirts"
           }
         }
@@ -32,18 +32,18 @@
         "button_6wwFex"
       ],
       "settings": {
-        "subheading": "",
-        "heading": "Essential Shirts",
-        "text": "",
+        "subheading": "New Lines Added",
+        "heading": "Black Friday Sale",
+        "text": "<h2>Up To 30% Off</h2>",
         "text_color": "#ffffff",
         "text_color_invert": "#000000",
         "background_color": "",
         "content_position": "bottom-center",
         "text_alignment": "center",
-        "content_position_desktop": "bottom-left",
-        "text_alignment_desktop": "left",
+        "content_position_desktop": "middle-center",
+        "text_alignment_desktop": "center",
         "image": "shopify://shop_images/MSS2A2F02C2D-ALPCT040-W1X-1a.jpg",
-        "image_desktop": "shopify://shop_images/JSE-STRIPED-CUFF-HOMEPAGE-HERO-BANNER-V1.jpg",
+        "image_desktop": "shopify://shop_images/Black_Friday_Hero_V2.jpg",
         "media_position": "center",
         "media_overlay_opacity": 10,
         "height": 750,
