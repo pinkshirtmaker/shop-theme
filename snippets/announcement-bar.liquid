@@ -1,15 +1,17 @@
+
 {% comment %}
-  Renders the header's announcement bar with carousel functionality.
+  Renders the header's announcement bar.
 
   Accepts:
   - background_color: {String} The background color.
   - text_color: {String} The text color.
-  - blocks: {Array} Array of announcement blocks with heading and subheading.
-  - link_text: {String} The custom link text (flagship store).
-  - link_url: {String} The custom link target (flagship store).
+  - heading: {String} The bar heading.
+  - subheading: {String} The bar subheading.
+  - link_text: {String} The custom link text.
+  - link_url: {String} The custom link target.
 
   Usage:
-  {% render 'announcement-bar', blocks: section.blocks, ... %}
+  {% render 'product-form', product: product %}
 {% endcomment %}
 
 <div
@@ -27,51 +29,25 @@
   {% endunless %}
   data-target="site-header.announcement"
 >
-  <div class="announcement-bar__carousel-wrapper">
-    {% if blocks.size > 1 %}
-      <button class="announcement-bar__arrow announcement-bar__arrow--prev" aria-label="Previous announcement">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    {% endif %}
+  <div
+    class="
+      announcement-bar__main
+      {% unless heading == empty or subheading == empty %}
+        announcement-bar__main--padded
+      {% endunless %}
+    "
+  >
+    {% unless heading == empty %}
+      <div class="announcement-bar__heading">{{ heading }}</div>
+    {% endunless %}
 
-    <div class="announcement-bar__carousel">
-      {% if blocks.size > 0 %}
-        {% for block in blocks %}
-          <div
-            class="announcement-bar__main {% if forloop.first %}is-active{% endif %}"
-            data-announcement-slide
-            {{ block.shopify_attributes }}
-          >
-            {% unless block.settings.heading == blank %}
-              <div class="announcement-bar__heading">{{ block.settings.heading }}</div>
-            {% endunless %}
-
-            {% unless block.settings.subheading == blank %}
-              <div class="announcement-bar__subheading">{{ block.settings.subheading }}</div>
-            {% endunless %}
-          </div>
-        {% endfor %}
-      {% else %}
-        {%- comment -%} Fallback if no blocks are added {%- endcomment -%}
-        <div class="announcement-bar__main is-active" data-announcement-slide>
-          <div class="announcement-bar__heading">Welcome to {{ shop.name }}</div>
-        </div>
-      {% endif %}
-    </div>
-
-    {% if blocks.size > 1 %}
-      <button class="announcement-bar__arrow announcement-bar__arrow--next" aria-label="Next announcement">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    {% endif %}
+    {% unless subheading == empty %}
+      <div class="announcement-bar__subheading">{{ subheading }}</div>
+    {% endunless %}
   </div>
 
   <div class="announcement-bar__right">
-    {% unless link_text == blank or link_url == blank %}
+    {% unless link_text == empty or link_url == empty %}
       <a class="announcement-bar__link text-body-small" href="{{ link_url }}">
         {{- link_text -}}
       </a>
@@ -83,142 +59,3 @@
     </button>
   </div>
 </div>
-
-<style>
-  .announcement-bar__carousel-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .announcement-bar__carousel {
-    position: relative;
-    flex: 1;
-    overflow: hidden;
-    min-width: 0;
-  }
-
-  .announcement-bar__main {
-    opacity: 0;
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-  }
-
-  .announcement-bar__main.is-active {
-    opacity: 1;
-    visibility: visible;
-    position: relative;
-  }
-
-  .announcement-bar__arrow {
-    background: transparent;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .announcement-bar__arrow:hover {
-    opacity: 0.7;
-  }
-
-  .announcement-bar__arrow:focus {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
-
-  .announcement-bar__arrow svg {
-    display: block;
-  }
-
-  @media (max-width: 768px) {
-    .announcement-bar__arrow {
-      padding: 8px;
-    }
-  }
-</style>
-
-<script>
-  (function() {
-    const carousel = document.querySelector('[data-target="site-header.announcement"]');
-    if (!carousel) return;
-
-    const slides = carousel.querySelectorAll('[data-announcement-slide]');
-    const prevButton = carousel.querySelector('.announcement-bar__arrow--prev');
-    const nextButton = carousel.querySelector('.announcement-bar__arrow--next');
-    
-    if (slides.length <= 1) return;
-
-    let currentIndex = 0;
-    let autoRotateInterval;
-
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('is-active', i === index);
-      });
-      currentIndex = index;
-    }
-
-    function nextSlide() {
-      const next = (currentIndex + 1) % slides.length;
-      showSlide(next);
-    }
-
-    function prevSlide() {
-      const prev = (currentIndex - 1 + slides.length) % slides.length;
-      showSlide(prev);
-    }
-
-    function startAutoRotate() {
-      autoRotateInterval = setInterval(nextSlide, 5000); // Change every 5 seconds
-    }
-
-    function stopAutoRotate() {
-      clearInterval(autoRotateInterval);
-    }
-
-    // Event listeners
-    if (nextButton) {
-      nextButton.addEventListener('click', () => {
-        nextSlide();
-        stopAutoRotate();
-        startAutoRotate(); // Restart timer after manual interaction
-      });
-    }
-
-    if (prevButton) {
-      prevButton.addEventListener('click', () => {
-        prevSlide();
-        stopAutoRotate();
-        startAutoRotate(); // Restart timer after manual interaction
-      });
-    }
-
-    // Pause on hover
-    carousel.addEventListener('mouseenter', stopAutoRotate);
-    carousel.addEventListener('mouseleave', startAutoRotate);
-
-    // Start auto-rotation
-    startAutoRotate();
-
-    // Pause when page is hidden
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        stopAutoRotate();
-      } else {
-        startAutoRotate();
-      }
-    });
-  })();
-</script>
