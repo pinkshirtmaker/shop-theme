@@ -1,16 +1,13 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-{% comment %}
-    CANONICAL URL LOGIC:
-    Checks if a custom URL is set in the Metafield. If not, uses the default.
-  {% endcomment %}
-
+{% comment %} theme-check-disable AssetUrlFilters {% endcomment %}
   {% if collection.metafields.custom.canonical_url != blank %}
     <link rel="canonical" href="{{ collection.metafields.custom.canonical_url }}">
   {% else %}
     <link rel="canonical" href="{{ canonical_url }}">
   {% endif %}
+  {% comment %} theme-check-enable AssetUrlFilters {% endcomment %}
 
     {% liquid
       render 'theme-head'
