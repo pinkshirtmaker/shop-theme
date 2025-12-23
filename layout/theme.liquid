@@ -1,24 +1,16 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-{% capture canonical_url %}
-  {% render 'canonical-tag' %}
-{% endcapture %}
-
-                
 {% comment %}
     CANONICAL URL LOGIC:
-    1. Checks if the current collection has a manual override set in the "Canonical URL" metafield.
-    2. If yes, it uses that specific URL (good for pointing Sale pages to Full Price pages).
-    3. If no, it falls back to the default Shopify behavior (self-referencing).
+    Checks if a custom URL is set in the Metafield. If not, uses the default.
   {% endcomment %}
-  
-  {% if collection.metafields.custom.canonical_url %}
+
+  {% if collection.metafields.custom.canonical_url != blank %}
     <link rel="canonical" href="{{ collection.metafields.custom.canonical_url }}">
   {% else %}
     <link rel="canonical" href="{{ canonical_url }}">
   {% endif %}
-
 
     {% liquid
       render 'theme-head'
