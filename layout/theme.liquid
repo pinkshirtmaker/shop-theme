@@ -1,13 +1,19 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
-  <head>
-{% comment %} theme-check-disable AssetUrlFilters {% endcomment %}
+<head>
+{%- comment -%}
+    Canonical URL Logic:
+    1. We disable 'RemoteAsset' because the linter mistakenly thinks this is an external CSS file.
+    2. We use the custom metafield if it exists, otherwise the default canonical_url.
+  {%- endcomment -%}
+
+  {% comment %} theme-check-disable RemoteAsset {% endcomment %}
   {% if collection.metafields.custom.canonical_url != blank %}
     <link rel="canonical" href="{{ collection.metafields.custom.canonical_url }}">
   {% else %}
     <link rel="canonical" href="{{ canonical_url }}">
   {% endif %}
-  {% comment %} theme-check-enable AssetUrlFilters {% endcomment %}
+  {% comment %} theme-check-enable RemoteAsset {% endcomment %}
 
     {% liquid
       render 'theme-head'
